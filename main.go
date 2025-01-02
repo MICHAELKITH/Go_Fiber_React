@@ -5,7 +5,12 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 )
+ type Todos struct{
+	id int
+	completed bool
+	desc string
 
+ }
 func main() {
 	app := fiber.New()
 
