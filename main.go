@@ -18,5 +18,9 @@ func main() {
 		return c.SendString("Hello, World!")
 	})
 
+	app.Patch("/:id", func(c *fiber.Ctx) error {
+		return c.SendString("Hello, World!")
+	})
+
 	log.Fatal(app.Listen(":8000"))
 }
