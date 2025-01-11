@@ -14,6 +14,7 @@ import (
 func main() {
 	app := fiber.New()
 
+	//initial slice
 	todos:=[]Todos{}
 
 	
