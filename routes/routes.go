@@ -12,5 +12,8 @@ func SetupRoutes(app *fiber.App) {
 	app.Patch("/api/todos:id", controllers.UpdateTodo)
 	app.Delete("/api/todos:id", controllers.DeleteTodo)
 	
+	app.Post("/signup", controllers.Signup)
+	app.Post("/login", controllers.Login)
+	app.Get("/protected", controllers.Protected)
 }
 
