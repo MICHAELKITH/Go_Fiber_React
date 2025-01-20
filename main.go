@@ -14,6 +14,8 @@ func main() {
 
 	// Setup routes
 	routes.SetupRoutes(app)
+	
+	//app listening
 
 	log.Fatal(app.Listen(":4000"))
 }
