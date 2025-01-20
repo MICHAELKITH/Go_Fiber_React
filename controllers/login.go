@@ -21,7 +21,7 @@ var users = make(map[string]string)
 // Secret key for JWT
 var jwtSecret = []byte("your-secret-key")
 
-// Signup handles user registration
+// Signup handles user registration 
 func Signup(c *fiber.Ctx) error {
 	// Request payload structure
 	type SignupRequest struct {
