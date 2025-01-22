@@ -5,7 +5,7 @@ go 1.22.0
 require (
 	github.com/gofiber/fiber/v2 v2.52.6
 	github.com/golang-jwt/jwt/v5 v5.2.1
-	golang.org/x/crypto v0.14.0
+	golang.org/x/crypto v0.31.0
 )
 
 require (
