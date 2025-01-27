@@ -9,7 +9,7 @@ import (
 	"github.com/MICHAELKITH/todo_app/routes"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/joho/godotenv" // Import for loading environment variables
+	"github.com/joho/godotenv" 
 )
 
 func main() {
