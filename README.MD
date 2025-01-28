@@ -57,10 +57,18 @@ Clone this repository to your desired folder:
 
 ### Install
 
-Install this project with:
+Install this project with// frontend:
 
 ```sh
   npm install
+```
+
+### Install
+
+Install this project with// backend
+
+```sh
+  go mod init
 ```
 
 ### Usage
