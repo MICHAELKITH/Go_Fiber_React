@@ -1,6 +1,9 @@
 package middlewares
 
 import (
+	"os"
+	"strings"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -12,13 +15,27 @@ func AuthMiddleware(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Missing authorization token"})
 	}
 
-	// Extract token from header (after "Bearer ")
-	tokenString := authHeader[len("Bearer "):]
+	// Ensure token starts with "Bearer "
+	if !strings.HasPrefix(authHeader, "Bearer ") {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token format"})
+	}
+
+	// Extract token after "Bearer "
+	tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+
+	// Get secret key from environment variables
+	secret := os.Getenv("JWT_SECRET")
+	if secret == "" {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Server misconfiguration: Missing JWT secret"})
+	}
 
 	// Parse the token
 	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
-		// Use your secret key for validation
-		return []byte("your-secret-key"), nil
+		// Ensure the token uses HMAC signing method
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fiber.NewError(fiber.StatusUnauthorized, "Invalid signing method")
+		}
+		return []byte(secret), nil
 	})
 
 	if err != nil || !token.Valid {
