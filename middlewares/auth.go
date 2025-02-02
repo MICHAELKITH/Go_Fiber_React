@@ -3,6 +3,7 @@ package middlewares
 import (
 	"os"
 	"strings"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -38,8 +39,27 @@ func AuthMiddleware(c *fiber.Ctx) error {
 		return []byte(secret), nil
 	})
 
+	// Check if the token is valid
 	if err != nil || !token.Valid {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid or expired token"})
+	}
+
+	// Extract claims
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token claims"})
+	}
+
+	// Check if the token has expired
+	if exp, ok := claims["exp"].(float64); ok {
+		if time.Now().Unix() > int64(exp) {
+			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Token has expired"})
+		}
+	}
+
+	// Store the user ID in the context
+	if userID, ok := claims["user_id"].(string); ok {
+		c.Locals("user_id", userID) // Now accessible in controllers
 	}
 
 	// Token is valid; continue to the next handler
