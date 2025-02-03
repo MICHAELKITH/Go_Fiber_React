@@ -7,13 +7,14 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// User represents a user in the database
+// User struct represents a user in the database.
 type User struct {
+	ID       int    `json:"id"`
 	Username string `json:"username"`
-	Password string `json:"password"`
+	Password string `json:"password,omitempty"` // Omitting password in JSON responses
 }
 
-// Check if a user exists in the database
+// Check if a user exists in the database.
 func UserExists(username string) (bool, error) {
 	var exists bool
 	err := config.DBPool.QueryRow(context.Background(),
@@ -21,7 +22,7 @@ func UserExists(username string) (bool, error) {
 	return exists, err
 }
 
-// Create a new user in the database
+// Create a new user in the database.
 func CreateUser(username, password string) error {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
@@ -33,10 +34,12 @@ func CreateUser(username, password string) error {
 	return err
 }
 
-// Get a user's hashed password from the database
-func GetUserPassword(username string) (string, error) {
-	var storedPassword string
+// Get user details by username.
+func GetUserByUsername(username string) (User, error) {
+	var user User
 	err := config.DBPool.QueryRow(context.Background(),
-		"SELECT password FROM users WHERE username=$1", username).Scan(&storedPassword)
-	return storedPassword, err
+		"SELECT id, username, password FROM users WHERE username=$1", username).
+		Scan(&user.ID, &user.Username, &user.Password)
+
+	return user, err
 }

@@ -9,7 +9,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-// AuthMiddleware validates the JWT token in the request header
+// AuthMiddleware validates the JWT token in the request header.
 func AuthMiddleware(c *fiber.Ctx) error {
 	authHeader := c.Get("Authorization")
 	if authHeader == "" {
@@ -57,9 +57,12 @@ func AuthMiddleware(c *fiber.Ctx) error {
 		}
 	}
 
-	// Store the user ID in the context
-	if userID, ok := claims["user_id"].(string); ok {
-		c.Locals("user_id", userID) // Now accessible in controllers
+	// Store user ID and username in the context
+	if userID, ok := claims["user_id"].(float64); ok {
+		c.Locals("user_id", int(userID)) // Convert float64 to int
+	}
+	if username, ok := claims["username"].(string); ok {
+		c.Locals("username", username)
 	}
 
 	// Token is valid; continue to the next handler

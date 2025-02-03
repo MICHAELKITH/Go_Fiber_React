@@ -14,7 +14,7 @@ func SetupRoutes(app *fiber.App) {
 	// Group protected routes
 	protected := app.Group("/api", middlewares.AuthMiddleware)
 	protected.Get("/todos", controllers.GetTodo)
-	protected.Post("/todos", controllers.AddTodo)
+	protected.Post("/todo", controllers.AddTodo)
 	protected.Patch("/todos/:id", controllers.UpdateTodo)
 	protected.Delete("/todos/:id", controllers.DeleteTodo)
 
