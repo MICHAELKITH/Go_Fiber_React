@@ -10,36 +10,37 @@ import (
 // User struct represents a user in the database.
 type User struct {
 	ID       int    `json:"id"`
-	Username string `json:"username"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
 	Password string `json:"password,omitempty"` // Omitting password in JSON responses
 }
 
 // Check if a user exists in the database.
-func UserExists(username string) (bool, error) {
+func UserExists(email string) (bool, error) {
 	var exists bool
 	err := config.DBPool.QueryRow(context.Background(),
-		"SELECT EXISTS (SELECT 1 FROM users WHERE username=$1)", username).Scan(&exists)
+		"SELECT EXISTS (SELECT 1 FROM users WHERE email=$1)", email).Scan(&exists)
 	return exists, err
 }
 
-// Create a new user in the database.
-func CreateUser(username, password string) error {
+// CreateUser inserts a new user into the database.
+func CreateUser(name, email, password string) error {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
 		return err
 	}
 
 	_, err = config.DBPool.Exec(context.Background(),
-		"INSERT INTO users (username, password) VALUES ($1, $2)", username, string(hashedPassword))
+		"INSERT INTO users (name, email, password) VALUES ($1, $2, $3)", name, email, string(hashedPassword))
 	return err
 }
 
-// Get user details by username.
-func GetUserByUsername(username string) (User, error) {
+// GetUserByEmail retrieves a user by email.
+func GetUserByEmail(email string) (User, error) {
 	var user User
 	err := config.DBPool.QueryRow(context.Background(),
-		"SELECT id, username, password FROM users WHERE username=$1", username).
-		Scan(&user.ID, &user.Username, &user.Password)
+		"SELECT id, name, email, password FROM users WHERE email=$1", email).
+		Scan(&user.ID, &user.Name, &user.Email, &user.Password)
 
 	return user, err
 }

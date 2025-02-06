@@ -16,7 +16,8 @@ var jwtSecret = []byte("your-secret-key")
 // Signup handles user registration
 func Signup(c *fiber.Ctx) error {
 	type SignupRequest struct {
-		Username string `json:"username" validate:"required,min=3"`
+		Name     string `json:"name" validate:"required,min=3"`
+		Email    string `json:"email" validate:"required,email"`
 		Password string `json:"password" validate:"required,min=6"`
 	}
 
@@ -26,7 +27,7 @@ func Signup(c *fiber.Ctx) error {
 	}
 
 	// Check if user exists
-	exists, err := models.UserExists(req.Username)
+	exists, err := models.UserExists(req.Email)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Database error"})
 	}
@@ -41,7 +42,7 @@ func Signup(c *fiber.Ctx) error {
 	}
 
 	// Create user
-	err = models.CreateUser(req.Username, string(hashedPassword))
+	err = models.CreateUser(req.Name, req.Email, string(hashedPassword))
 	if err != nil {
 		log.Println("Error creating user:", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to create user"})
@@ -50,11 +51,10 @@ func Signup(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{"message": "User registered successfully"})
 }
 
-
 // Login handles user authentication
 func Login(c *fiber.Ctx) error {
 	type LoginRequest struct {
-		Username string `json:"username" validate:"required"`
+		Email    string `json:"email" validate:"required,email"`
 		Password string `json:"password" validate:"required"`
 	}
 
@@ -64,21 +64,24 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	// Retrieve user details
-	user, err := models.GetUserByUsername(req.Username)
+	user, err := models.GetUserByEmail(req.Email)
 	if err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid username or password"})
+		log.Println("User not found:", req.Email)
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid email or password"})
 	}
+	log.Println("User found:", user.Email, "Stored Hash:", user.Password)
 
 	// Validate password
 	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid username or password"})
+		log.Println("Password mismatch for:", req.Email)
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid email or password"})
 	}
 
-	// Generate JWT token with user ID and username
+	// Generate JWT token with user ID and email
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"id":       user.ID,
-		"username": user.Username,
-		"exp":      time.Now().Add(time.Hour * 24).Unix(),
+		"id":    user.ID,
+		"email": user.Email,
+		"exp":   time.Now().Add(time.Hour * 24).Unix(),
 	})
 
 	tokenString, err := token.SignedString(jwtSecret)
@@ -89,14 +92,13 @@ func Login(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"token": tokenString})
 }
 
-
 // Protected route
 func Protected(c *fiber.Ctx) error {
 	authHeader := c.Get("Authorization")
 	if len(authHeader) <= len("Bearer ") {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token"})
 	}
-	tokenString := authHeader[len("Bearer "):]
+	tokenString := authHeader[len("Bearer "):] 
 
 	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
 		return jwtSecret, nil
@@ -110,13 +112,13 @@ func Protected(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token claims"})
 	}
 
-	username, exists := claims["username"].(string)
+	email, exists := claims["email"].(string)
 	if !exists {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token payload"})
 	}
 
 	return c.JSON(fiber.Map{
-		"message":  "Access granted to protected route",
-		"username": username,
+		"message": "Access granted to protected route",
+		"email":   email,
 	})
 }
