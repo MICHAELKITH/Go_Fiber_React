@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"log"
+	"strings"
 	"time"
 
 	"github.com/MICHAELKITH/todo_app/models"
@@ -60,8 +61,15 @@ func Login(c *fiber.Ctx) error {
 
 	req := new(LoginRequest)
 	if err := c.BodyParser(req); err != nil {
+		log.Println("Error parsing request:", err)
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid input"})
 	}
+
+	// Trim spaces from email and password
+	req.Email = strings.TrimSpace(req.Email)
+	req.Password = strings.TrimSpace(req.Password)
+
+	log.Println("Received login request for:", req.Email)
 
 	// Retrieve user details
 	user, err := models.GetUserByEmail(req.Email)
@@ -69,6 +77,7 @@ func Login(c *fiber.Ctx) error {
 		log.Println("User not found:", req.Email)
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid email or password"})
 	}
+
 	log.Println("User found:", user.Email, "Stored Hash:", user.Password)
 
 	// Validate password
@@ -76,6 +85,8 @@ func Login(c *fiber.Ctx) error {
 		log.Println("Password mismatch for:", req.Email)
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid email or password"})
 	}
+
+	log.Println("Password matched successfully for:", req.Email)
 
 	// Generate JWT token with user ID and email
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
@@ -86,8 +97,11 @@ func Login(c *fiber.Ctx) error {
 
 	tokenString, err := token.SignedString(jwtSecret)
 	if err != nil {
+		log.Println("Error generating token:", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Could not generate token"})
 	}
+
+	log.Println("Token generated successfully for:", req.Email)
 
 	return c.JSON(fiber.Map{"token": tokenString})
 }
