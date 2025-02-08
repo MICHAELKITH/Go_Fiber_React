@@ -2,6 +2,7 @@ package models
 
 import (
 	"context"
+	"log"
 
 	"github.com/MICHAELKITH/todo_app/config"
 	"golang.org/x/crypto/bcrypt"
@@ -25,13 +26,18 @@ func UserExists(email string) (bool, error) {
 
 // CreateUser inserts a new user into the database.
 func CreateUser(name, email, password string) error {
+	// Hash password before saving
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
 	if err != nil {
+		log.Println("Error hashing password:", err)
 		return err
 	}
 
 	_, err = config.DBPool.Exec(context.Background(),
 		"INSERT INTO users (name, email, password) VALUES ($1, $2, $3)", name, email, string(hashedPassword))
+	if err != nil {
+		log.Println("Error inserting user:", err)
+	}
 	return err
 }
 
@@ -42,5 +48,8 @@ func GetUserByEmail(email string) (User, error) {
 		"SELECT id, name, email, password FROM users WHERE email=$1", email).
 		Scan(&user.ID, &user.Name, &user.Email, &user.Password)
 
+	if err != nil {
+		log.Println("Error retrieving user from database:", err)
+	}
 	return user, err
 }

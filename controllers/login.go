@@ -2,29 +2,54 @@ package controllers
 
 import (
 	"log"
+	"os"
 	"strings"
 	"time"
 
+	"github.com/joho/godotenv"
 	"github.com/MICHAELKITH/todo_app/models"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Secret key for JWT
-var jwtSecret = []byte("your-secret-key")
+// Load the .env file and handle any errors if it fails
+func init() {
+	if err := godotenv.Load(); err != nil {
+		log.Println("Error loading .env file")
+	}
+}
+
+// Get JWT secret from environment variables
+var jwtSecret = []byte(os.Getenv("JWT_SECRET"))
 
 // Signup handles user registration
 func Signup(c *fiber.Ctx) error {
 	type SignupRequest struct {
-		Name     string `json:"name" validate:"required,min=3"`
-		Email    string `json:"email" validate:"required,email"`
-		Password string `json:"password" validate:"required,min=6"`
+		Name     string `json:"name"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
 	}
 
 	req := new(SignupRequest)
 	if err := c.BodyParser(req); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid input"})
+	}
+
+	// Trim whitespace
+	req.Name = strings.TrimSpace(req.Name)
+	req.Email = strings.TrimSpace(req.Email)
+	req.Password = strings.TrimSpace(req.Password)
+
+	// Validate input
+	if len(req.Name) < 3 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Name must be at least 3 characters long"})
+	}
+	if !strings.Contains(req.Email, "@") {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid email address"})
+	}
+	if len(req.Password) < 6 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Password must be at least 6 characters long"})
 	}
 
 	// Check if user exists
@@ -36,14 +61,8 @@ func Signup(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusConflict).JSON(fiber.Map{"error": "User already exists"})
 	}
 
-	// Hash password
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
-	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to hash password"})
-	}
-
 	// Create user
-	err = models.CreateUser(req.Name, req.Email, string(hashedPassword))
+	err = models.CreateUser(req.Name, req.Email, req.Password)
 	if err != nil {
 		log.Println("Error creating user:", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to create user"})
@@ -55,8 +74,8 @@ func Signup(c *fiber.Ctx) error {
 // Login handles user authentication
 func Login(c *fiber.Ctx) error {
 	type LoginRequest struct {
-		Email    string `json:"email" validate:"required,email"`
-		Password string `json:"password" validate:"required"`
+		Email    string `json:"email"`
+		Password string `json:"password"`
 	}
 
 	req := new(LoginRequest)
@@ -78,10 +97,12 @@ func Login(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid email or password"})
 	}
 
-	log.Println("User found:", user.Email, "Stored Hash:", user.Password)
+	log.Println("User found:", user.Email)
+	log.Println("Stored Hashed Password:", user.Password)
 
 	// Validate password
-	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
+	if err != nil {
 		log.Println("Password mismatch for:", req.Email)
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid email or password"})
 	}
@@ -112,18 +133,25 @@ func Protected(c *fiber.Ctx) error {
 	if len(authHeader) <= len("Bearer ") {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token"})
 	}
-	tokenString := authHeader[len("Bearer "):] 
+	tokenString := authHeader[len("Bearer "):]
 
-	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
+	claims := jwt.MapClaims{}
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (interface{}, error) {
 		return jwtSecret, nil
 	})
+
 	if err != nil || !token.Valid {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid or expired token"})
 	}
 
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token claims"})
+	// Validate expiration time
+	exp, exists := claims["exp"].(float64)
+	if !exists {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Token missing expiration"})
+	}
+
+	if time.Now().Unix() > int64(exp) {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Token has expired"})
 	}
 
 	email, exists := claims["email"].(string)
