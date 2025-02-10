@@ -58,7 +58,7 @@ func Signup(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Database error"})
 	}
 	if exists {
-		return c.Status(fiber.StatusConflict).JSON(fiber.Map{"error": "User already exists"})
+		return c.Status(fiber.StatusConflict).JSON(fiber.Map{"error": "User already exists in our database"})
 	}
 
 	// Create user
