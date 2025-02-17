@@ -18,6 +18,6 @@ func SetupRoutes(app *fiber.App) {
 	protected.Patch("/todos/:id", controllers.UpdateTodo)
 	protected.Delete("/todos/:id", controllers.DeleteTodo)
 
-	// Example protected route /not working/
+	// Example protected route /not working/ 
 	app.Get("/protected", middlewares.AuthMiddleware, controllers.Protected)
 }

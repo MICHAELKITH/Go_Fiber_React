@@ -158,7 +158,7 @@ func Protected(c *fiber.Ctx) error {
 	if !exists {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token payload"})
 	}
-
+//no access
 	return c.JSON(fiber.Map{
 		"message": "Access granted to protected route",
 		"email":   email,
