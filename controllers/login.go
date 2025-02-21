@@ -147,7 +147,7 @@ func Protected(c *fiber.Ctx) error {
 	// Validate expiration time//
 	exp, exists := claims["exp"].(float64)
 	if !exists {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Token missing expiration"})
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Token missing expiration!"})
 	}
 
 	if time.Now().Unix() > int64(exp) {
