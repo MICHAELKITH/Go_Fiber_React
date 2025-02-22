@@ -160,7 +160,7 @@ func Protected(c *fiber.Ctx) error {
 	}
 //no access
 	return c.JSON(fiber.Map{
-		"message": "Access granted to protected route",
+		"message": "Access granted to protected routes ",
 		"email":   email,
 	})
 }
