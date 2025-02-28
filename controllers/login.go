@@ -141,7 +141,7 @@ func Protected(c *fiber.Ctx) error {
 	})
 
 	if err != nil || !token.Valid {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid or expired token"})
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid or expired token!"}) //  "error": "Invalid or expired token"
 	}
 
 	// Validate expiration time//
