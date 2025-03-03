@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"fmt"
 	"os"
 	"strings"
 	"time"
@@ -13,12 +14,12 @@ import (
 func AuthMiddleware(c *fiber.Ctx) error {
 	authHeader := c.Get("Authorization")
 	if authHeader == "" {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Missing authorization token"})
+		return fiber.NewError(fiber.StatusUnauthorized, "Missing authorization token")
 	}
 
 	// Ensure token starts with "Bearer "
 	if !strings.HasPrefix(authHeader, "Bearer ") {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token format"})
+		return fiber.NewError(fiber.StatusUnauthorized, "Invalid token format")
 	}
 
 	// Extract token after "Bearer "
@@ -27,8 +28,12 @@ func AuthMiddleware(c *fiber.Ctx) error {
 	// Get secret key from environment variables
 	secret := os.Getenv("JWT_SECRET")
 	if secret == "" {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Server misconfiguration: Missing JWT secret"})
+		return fiber.NewError(fiber.StatusInternalServerError, "Server misconfiguration: Missing JWT secret")
 	}
+
+	// Debugging: Print token and secret (remove in production)
+	fmt.Println("Received Token:", tokenString)
+	fmt.Println("JWT_SECRET:", secret)
 
 	// Parse the token
 	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
@@ -39,25 +44,33 @@ func AuthMiddleware(c *fiber.Ctx) error {
 		return []byte(secret), nil
 	})
 
-	// Check if the token is valid
-	if err != nil || !token.Valid {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid or expired token"})
+	// Handle token parsing errors
+	if err != nil {
+		fmt.Println("JWT Parsing Error:", err)
+		return fiber.NewError(fiber.StatusUnauthorized, "Invalid or expired token")
 	}
 
-	// Extract claims
+	// Ensure the token is valid
+	if !token.Valid {
+		return fiber.NewError(fiber.StatusUnauthorized, "Invalid or expired token")
+	}
+
+	// Extract claims safely
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if !ok {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token claims"})
+		return fiber.NewError(fiber.StatusUnauthorized, "Invalid token claims")
 	}
 
-	// Check if the token has expired
-	if exp, ok := claims["exp"].(float64); ok {
-		if time.Now().Unix() > int64(exp) {
-			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Token has expired"})
-		}
+	// Check expiration time
+	exp, ok := claims["exp"].(float64)
+	if !ok {
+		return fiber.NewError(fiber.StatusUnauthorized, "Token expiration time missing")
+	}
+	if time.Now().Unix() > int64(exp) {
+		return fiber.NewError(fiber.StatusUnauthorized, "Token has expired")
 	}
 
-	// Store user ID and username in the context
+	// Extract user_id and username from claims safely
 	if userID, ok := claims["user_id"].(float64); ok {
 		c.Locals("user_id", int(userID)) // Convert float64 to int
 	}
@@ -65,6 +78,6 @@ func AuthMiddleware(c *fiber.Ctx) error {
 		c.Locals("username", username)
 	}
 
-	// Token is valid; continue to the next handler
+	// Token is valid; proceed to the next handler
 	return c.Next()
 }
