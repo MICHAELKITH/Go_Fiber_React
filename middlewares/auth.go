@@ -25,7 +25,7 @@ func AuthMiddleware(c *fiber.Ctx) error {
 	// Extract token after "Bearer "
 	tokenString := strings.TrimPrefix(authHeader, "Bearer ")
 
-	// Get secret key from environment variables
+	// Get secret key from environment variables jwt
 	secret := os.Getenv("JWT_SECRET")
 	if secret == "" {
 		return fiber.NewError(fiber.StatusInternalServerError, "Server misconfiguration: Missing JWT secret")
