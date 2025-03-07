@@ -14,7 +14,7 @@ import (
 func AuthMiddleware(c *fiber.Ctx) error {
 	authHeader := c.Get("Authorization")
 	if authHeader == "" {
-		return fiber.NewError(fiber.StatusUnauthorized, "Missing authorization token")
+		return fiber.NewError(fiber.StatusUnauthorized, "Missing authorization token!")
 	}
 
 	// Ensure token starts with "Bearer "
