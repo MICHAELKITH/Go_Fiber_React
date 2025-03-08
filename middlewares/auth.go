@@ -61,21 +61,35 @@ func AuthMiddleware(c *fiber.Ctx) error {
 		return fiber.NewError(fiber.StatusUnauthorized, "Invalid token claims")
 	}
 
-	// Check expiration time
-	exp, ok := claims["exp"].(float64)
-	if !ok {
+	// Debugging: Print decoded claims
+	fmt.Println("Decoded Claims:", claims)
+
+	// Check expiration time (handle int or float)
+	var exp float64
+	switch v := claims["exp"].(type) {
+	case float64:
+		exp = v
+	case int:
+		exp = float64(v)
+	default:
 		return fiber.NewError(fiber.StatusUnauthorized, "Token expiration time missing")
 	}
 	if time.Now().Unix() > int64(exp) {
 		return fiber.NewError(fiber.StatusUnauthorized, "Token has expired")
 	}
 
-	// Extract user_id and username from claims safely
-	if userID, ok := claims["user_id"].(float64); ok {
-		c.Locals("user_id", int(userID)) // Convert float64 to int
+	// Extract user_id and email from claims safely
+	switch v := claims["id"].(type) {
+	case float64:
+		c.Locals("user_id", int(v))
+	case string:
+		c.Locals("user_id", v)
+	default:
+		return fiber.NewError(fiber.StatusUnauthorized, "Invalid user ID format")
 	}
-	if username, ok := claims["username"].(string); ok {
-		c.Locals("username", username)
+
+	if email, ok := claims["email"].(string); ok {
+		c.Locals("email", email)
 	}
 
 	// Token is valid; proceed to the next handler

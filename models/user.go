@@ -41,15 +41,26 @@ func CreateUser(name, email, password string) error {
 	return err
 }
 
-// GetUserByEmail retrieves a user by email.
+// GetUserByEmail retrieves a user by email (case insensitive).
 func GetUserByEmail(email string) (User, error) {
 	var user User
+
+	// Query database (ensuring case-insensitive search)
 	err := config.DBPool.QueryRow(context.Background(),
-		"SELECT id, name, email, password FROM users WHERE email=$1", email).
+		"SELECT id, name, email, password FROM users WHERE LOWER(email) = LOWER($1)", email).
 		Scan(&user.ID, &user.Name, &user.Email, &user.Password)
 
+	// Handle errors properly
 	if err != nil {
-		log.Println("Error retrieving user from database:", err)
+		if err.Error() == "no rows in result set" {
+			log.Println("User not found:", email)
+			return User{}, err
+		}
+		log.Println("Database error:", err)
+		return User{}, err
 	}
-	return user, err
+
+	log.Println("User retrieved successfully:", user.Email)
+	return user, nil
 }
+
