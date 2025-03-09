@@ -14,30 +14,27 @@ import (
 func AuthMiddleware(c *fiber.Ctx) error {
 	authHeader := c.Get("Authorization")
 	if authHeader == "" {
-		return fiber.NewError(fiber.StatusUnauthorized, "Missing authorization token!")
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Missing authorization token"})
 	}
 
 	// Ensure token starts with "Bearer "
 	if !strings.HasPrefix(authHeader, "Bearer ") {
-		return fiber.NewError(fiber.StatusUnauthorized, "Invalid token format")
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token format"})
 	}
 
-	// Extract token after "Bearer "
-	tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+	// Extract token after "Bearer " and remove any extra quotes
+	tokenString := strings.Trim(strings.TrimPrefix(authHeader, "Bearer "), "\"")
+	fmt.Println("Received Token:", tokenString) // Debugging log
 
-	// Get secret key from environment variables jwt
+	// Get secret key from environment variables
 	secret := os.Getenv("JWT_SECRET")
 	if secret == "" {
-		return fiber.NewError(fiber.StatusInternalServerError, "Server misconfiguration: Missing JWT secret")
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Server misconfiguration: Missing JWT secret"})
 	}
 
-	// Debugging: Print token and secret (remove in production)
-	fmt.Println("Received Token:", tokenString)
-	fmt.Println("JWT_SECRET:", secret)
-
-	// Parse the token
-	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
-		// Ensure the token uses HMAC signing method
+	// Parse the token with claims
+	claims := jwt.MapClaims{}
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fiber.NewError(fiber.StatusUnauthorized, "Invalid signing method")
 		}
@@ -45,51 +42,28 @@ func AuthMiddleware(c *fiber.Ctx) error {
 	})
 
 	// Handle token parsing errors
-	if err != nil {
-		fmt.Println("JWT Parsing Error:", err)
-		return fiber.NewError(fiber.StatusUnauthorized, "Invalid or expired token")
+	if err != nil || !token.Valid {
+		fmt.Println("Token parsing error:", err) // Debugging log
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid or expired token!"})
 	}
 
-	// Ensure the token is valid
-	if !token.Valid {
-		return fiber.NewError(fiber.StatusUnauthorized, "Invalid or expired token")
+	// Extract and validate expiration time
+	exp, ok := claims["exp"].(float64)
+	if !ok || time.Now().Unix() > int64(exp) {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Token has expired"})
 	}
 
-	// Extract claims safely
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok {
-		return fiber.NewError(fiber.StatusUnauthorized, "Invalid token claims")
-	}
-
-	// Debugging: Print decoded claims
-	fmt.Println("Decoded Claims:", claims)
-
-	// Check expiration time (handle int or float)
-	var exp float64
-	switch v := claims["exp"].(type) {
-	case float64:
-		exp = v
-	case int:
-		exp = float64(v)
-	default:
-		return fiber.NewError(fiber.StatusUnauthorized, "Token expiration time missing")
-	}
-	if time.Now().Unix() > int64(exp) {
-		return fiber.NewError(fiber.StatusUnauthorized, "Token has expired")
-	}
-
-	// Extract user_id and email from claims safely
-	switch v := claims["id"].(type) {
-	case float64:
-		c.Locals("user_id", int(v))
-	case string:
-		c.Locals("user_id", v)
-	default:
-		return fiber.NewError(fiber.StatusUnauthorized, "Invalid user ID format")
+	// Extract user_id and email safely
+	if id, ok := claims["id"].(float64); ok {
+		c.Locals("user_id", int(id))
+	} else {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid user ID"})
 	}
 
 	if email, ok := claims["email"].(string); ok {
 		c.Locals("email", email)
+	} else {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid email"})
 	}
 
 	// Token is valid; proceed to the next handler
