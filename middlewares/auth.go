@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"fmt"
 	"os"
 	"strings"
 	"time"
@@ -21,8 +22,9 @@ func AuthMiddleware(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token format"})
 	}
 
-	// Extract token after "Bearer "
-	tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+	// Extract token after "Bearer " and remove any extra quotes
+	tokenString := strings.Trim(strings.TrimPrefix(authHeader, "Bearer "), "\"")
+	fmt.Println("Received Token:", tokenString) // Debugging log
 
 	// Get secret key from environment variables
 	secret := os.Getenv("JWT_SECRET")
@@ -30,41 +32,40 @@ func AuthMiddleware(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Server misconfiguration: Missing JWT secret"})
 	}
 
-	// Parse the token
-	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
-		// Ensure the token uses HMAC signing method
+	// Parse the token with claims
+	claims := jwt.MapClaims{}
+	token, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fiber.NewError(fiber.StatusUnauthorized, "Invalid signing method")
 		}
 		return []byte(secret), nil
 	})
 
-	// Check if the token is valid
+	// Handle token parsing errors
 	if err != nil || !token.Valid {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid or expired token"})
+		fmt.Println("Token parsing error:", err) // Debugging log
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid or expired token!"})
 	}
 
-	// Extract claims
-	claims, ok := token.Claims.(jwt.MapClaims)
-	if !ok {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token claims"})
+	// Extract and validate expiration time
+	exp, ok := claims["exp"].(float64)
+	if !ok || time.Now().Unix() > int64(exp) {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Token has expired"})
 	}
 
-	// Check if the token has expired
-	if exp, ok := claims["exp"].(float64); ok {
-		if time.Now().Unix() > int64(exp) {
-			return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Token has expired"})
-		}
+	// Extract user_id and email safely
+	if id, ok := claims["id"].(float64); ok {
+		c.Locals("user_id", int(id))
+	} else {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid user ID"})
 	}
 
-	// Store user ID and username in the context
-	if userID, ok := claims["user_id"].(float64); ok {
-		c.Locals("user_id", int(userID)) // Convert float64 to int
-	}
-	if username, ok := claims["username"].(string); ok {
-		c.Locals("username", username)
+	if email, ok := claims["email"].(string); ok {
+		c.Locals("email", email)
+	} else {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid email"})
 	}
 
-	// Token is valid; continue to the next handler
+	// Token is valid; proceed to the next handler
 	return c.Next()
 }

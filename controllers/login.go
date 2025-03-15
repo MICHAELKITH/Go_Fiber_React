@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"log"
 	"os"
 	"strings"
@@ -13,15 +14,21 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// Load the .env file and handle any errors if it fails
+// Load environment variables
 func init() {
 	if err := godotenv.Load(); err != nil {
-		log.Println("Error loading .env file")
+		log.Println("Warning: Failed to load .env file")
 	}
 }
 
-// Get JWT secret from environment variables
-var jwtSecret = []byte(os.Getenv("JWT_SECRET"))
+// Get JWT secret dynamically
+func getJWTSecret() []byte {
+	secret := os.Getenv("JWT_SECRET")
+	if secret == "" {
+		log.Println("Warning: JWT_SECRET is not set")
+	}
+	return []byte(secret)
+}
 
 // Signup handles user registration
 func Signup(c *fiber.Ctx) error {
@@ -52,9 +59,10 @@ func Signup(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Password must be at least 6 characters long"})
 	}
 
-	// Check if user exists
+	// Check if user already exists
 	exists, err := models.UserExists(req.Email)
 	if err != nil {
+		log.Println("Database error:", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Database error"})
 	}
 	if exists {
@@ -62,8 +70,7 @@ func Signup(c *fiber.Ctx) error {
 	}
 
 	// Create user
-	err = models.CreateUser(req.Name, req.Email, req.Password)
-	if err != nil {
+	if err := models.CreateUser(req.Name, req.Email, req.Password); err != nil {
 		log.Println("Error creating user:", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Failed to create user"})
 	}
@@ -84,11 +91,11 @@ func Login(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid input"})
 	}
 
-	// Trim spaces from email and password
+	// Trim spaces
 	req.Email = strings.TrimSpace(req.Email)
 	req.Password = strings.TrimSpace(req.Password)
 
-	log.Println("Received login request for:", req.Email)
+	log.Println("Login attempt:", req.Email)
 
 	// Retrieve user details
 	user, err := models.GetUserByEmail(req.Email)
@@ -98,25 +105,23 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	log.Println("User found:", user.Email)
-	log.Println("Stored Hashed Password:", user.Password)
 
 	// Validate password
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
-	if err != nil {
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password)); err != nil {
 		log.Println("Password mismatch for:", req.Email)
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid email or password"})
 	}
 
 	log.Println("Password matched successfully for:", req.Email)
 
-	// Generate JWT token with user ID and email
+	// Generate JWT token
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":    user.ID,
 		"email": user.Email,
-		"exp":   time.Now().Add(time.Hour * 24).Unix(),
+		"exp":   time.Now().Add(24 * time.Hour).Unix(),
 	})
 
-	tokenString, err := token.SignedString(jwtSecret)
+	tokenString, err := token.SignedString(getJWTSecret())
 	if err != nil {
 		log.Println("Error generating token:", err)
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "Could not generate token"})
@@ -130,32 +135,41 @@ func Login(c *fiber.Ctx) error {
 // Protected route
 func Protected(c *fiber.Ctx) error {
 	authHeader := c.Get("Authorization")
-	if len(authHeader) <= len("Bearer ") {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token"})
+	if !strings.HasPrefix(authHeader, "Bearer ") {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token format"})
 	}
-	tokenString := authHeader[len("Bearer "):]
+
+	// Extract and trim token
+	tokenString := strings.TrimSpace(strings.TrimPrefix(authHeader, "Bearer "))
 
 	claims := jwt.MapClaims{}
 	token, err := jwt.ParseWithClaims(tokenString, claims, func(t *jwt.Token) (interface{}, error) {
-		return jwtSecret, nil
+		// Ensure token uses the correct signing method
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", t.Header["alg"])
+		}
+		return getJWTSecret(), nil
 	})
 
+	// Token validation
 	if err != nil || !token.Valid {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid or expired token"})
+		log.Println("Token parsing error:", err)
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid or expired token!"})
 	}
 
 	// Validate expiration time
-	exp, exists := claims["exp"].(float64)
-	if !exists {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Token missing expiration"})
+	exp, ok := claims["exp"].(float64)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token format!"})
 	}
 
 	if time.Now().Unix() > int64(exp) {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Token has expired"})
 	}
 
-	email, exists := claims["email"].(string)
-	if !exists {
+	// Extract email from token
+	email, ok := claims["email"].(string)
+	if !ok {
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token payload"})
 	}
 
