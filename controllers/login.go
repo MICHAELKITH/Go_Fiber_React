@@ -160,7 +160,7 @@ func Protected(c *fiber.Ctx) error {
 	// Validate expiration time
 	exp, ok := claims["exp"].(float64)
 	if !ok {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token format"})
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Invalid token format!"})
 	}
 
 	if time.Now().Unix() > int64(exp) {
