@@ -164,7 +164,7 @@ func Protected(c *fiber.Ctx) error {
 	}
 
 	if time.Now().Unix() > int64(exp) {
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Token has expired"})
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{"error": "Token has expired!"})
 	}
 
 	// Extract email from token
