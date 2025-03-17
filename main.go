@@ -9,7 +9,7 @@ import (
 	"github.com/MICHAELKITH/todo_app/routes"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
-	"github.com/joho/godotenv" 
+	"github.com/joho/godotenv"
 )
 
 func main() {
@@ -33,9 +33,8 @@ func main() {
 	// Build the connection string
 	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s", dbUser, dbPassword, dbHost, dbPort, dbName)
 
-	// Initialize the database connection
-// Database connection
-    config.InitializeDB(dsn)
+	// Database connection
+	config.InitializeDB(dsn)
 	defer config.CloseDB()
 
 	// Initialize the Fiber app

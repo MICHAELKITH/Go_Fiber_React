@@ -139,3 +139,13 @@ I would like to thank Helpjuice for their original design.
 This project is [MIT](./LICENSE.md) licensed.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+
+
+
+Login
+{
+
+  "email": "mike@example55653.com",
+  "password": "securePass123"
+}
