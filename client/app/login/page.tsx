@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import { Toaster, toast } from "react-hot-toast";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -8,11 +9,38 @@ export default function Login() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!email || !password) {
+      toast.error("⚠️ Please fill in all fields!", {
+        position: "top-center",
+        style: {
+          borderRadius: "8px",
+          background: "#1a1a1a",
+          color: "#ff4d4d",
+          border: "1px solid #ff4d4d",
+        },
+      });
+      return;
+    }
+
+    toast.success("✅ Logged in successfully!", {
+      position: "top-center",
+      style: {
+        borderRadius: "8px",
+        background: "#1a1a1a",
+        color: "#4dff4d",
+        border: "1px solid #4dff4d",
+      },
+    });
+
     console.log("Login:", { email, password });
   };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-black text-white relative overflow-hidden">
+      {/* Toaster Component */}
+      <Toaster />
+
       {/* Cyber Background */}
       <div className="absolute inset-0 bg-[url('/cyber-bg.jpg')] bg-cover bg-center opacity-20"></div>
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
