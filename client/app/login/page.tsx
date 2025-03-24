@@ -6,15 +6,39 @@ import { Toaster, toast } from "react-hot-toast";
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
     if (!email || !password) {
       toast.error("⚠️ Please fill in all fields!");
       return;
     }
-    toast.success("✅ Logged in successfully!");
-    console.log("Login:", { email, password });
+
+    setLoading(true);
+
+    try {
+      const response = await fetch("http://localhost:4000/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Login failed");
+      }
+
+      toast.success("✅ Logged in successfully!");
+      console.log("Token:", data.token);
+      localStorage.setItem("token", data.token); // Store token in local storage
+    } catch (error: any) {
+      toast.error(`❌ ${error.message}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -47,8 +71,12 @@ export default function Login() {
           className="w-full p-2 mb-4 bg-black/70 text-green-400 border border-green-500 focus:ring-2 focus:ring-neon-green rounded sm:text-lg"
           required
         />
-        <button type="submit" className="w-full bg-green-500 hover:bg-green-600 text-black font-bold py-2 rounded sm:text-lg transition-transform hover:scale-105">
-          Login
+        <button
+          type="submit"
+          className="w-full bg-green-500 hover:bg-green-600 text-black font-bold py-2 rounded sm:text-lg transition-transform hover:scale-105"
+          disabled={loading}
+        >
+          {loading ? "Logging in..." : "Login"}
         </button>
       </form>
 
