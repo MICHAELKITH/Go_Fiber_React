@@ -33,7 +33,7 @@ export default function Login() {
 
       toast.success("✅ Logged in successfully!");
       console.log("Token:", data.token);
-      localStorage.setItem("token", data.token); // Store token in local storage
+      localStorage.setItem("token", data.token); // Store token in local storage here
     } catch (error) {
       toast.error(`❌ ${error.message}`);
     } finally {
