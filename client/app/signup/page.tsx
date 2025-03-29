@@ -117,7 +117,7 @@ export default function Signup() {
           className="w-full bg-green-500 hover:bg-green-600 text-black font-bold py-3 rounded transition transform hover:scale-105 disabled:opacity-50"
           disabled={loading}
         >
-          {loading ? "Signing up..." : "Sign Up"}
+          {loading ? "Creating account..." : "Sign Up "}
         </button>
       </form>
 
