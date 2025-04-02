@@ -8,17 +8,17 @@ import (
 
 var DBPool *pgxpool.Pool
 
-//  database connection pool
+// InitializeDB initializes the database connection pool
 func InitializeDB(dsn string) {
     var err error
     DBPool, err = pgxpool.New(context.Background(), dsn)
     if err != nil {
-        log.Fatalf("Unable to connect to the database: %v\n", err)
+        log.Fatalf("\033[31mUnable to connect to the database: %v\033[0m\n", err) 
     }
-    log.Println("Database connection established !.")
+    log.Println("\033[36mDatabase connection established!\033[0m") 
 }
 
-// CloseDB 
+// CloseDB closes the database connection pool
 func CloseDB() {
     if DBPool != nil {
         DBPool.Close()
