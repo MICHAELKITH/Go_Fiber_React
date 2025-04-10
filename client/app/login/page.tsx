@@ -80,7 +80,7 @@ export default function Login() {
         </button>
       </form>
 
-      <p className="mt-4 text-gray-400 text-sm md:text-base text-center relative z-10">
+      <p className="mt-6 text-gray-400 text-sm md:text-base text-center relative z-10">
         Don't have an account? <Link href="/signup" className="text-neon-green hover:underline">Sign Up here</Link>
       </p>
     </div>
