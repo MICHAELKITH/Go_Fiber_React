@@ -8,18 +8,39 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePassword = (password: string) => {
+    return password.length >= 8; // Add more rules if needed
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!email || !password) {
       toast.error("⚠️ Please fill in all fields!");
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      toast.error("⚠️ Please enter a valid email address!");
+      return;
+    }
+
+    if (!validatePassword(password)) {
+      toast.error("⚠️ Password must be at least 8 characters long!");
       return;
     }
 
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:4000/login", {
+      const response = await fetch(`${API_URL}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
@@ -33,8 +54,10 @@ export default function Login() {
 
       toast.success("✅ Logged in successfully!");
       console.log("Token:", data.token);
-      localStorage.setItem("token", data.token); // Store token in local storage here
-    } catch (error) {
+
+      // Store token securely (consider using cookies instead of localStorage)
+      localStorage.setItem("token", data.token);
+    } catch (error: any) {
       toast.error(`❌ ${error.message}`);
     } finally {
       setLoading(false);
@@ -54,21 +77,32 @@ export default function Login() {
         Login to 55 BLOCKS
       </h2>
 
-      <form onSubmit={handleSubmit} className="relative z-10 bg-gray-900/80 p-6 rounded-lg w-full max-w-sm shadow-lg border border-green-500">
-        <label className="block mb-2 text-gray-300">Email</label>
+      <form
+        onSubmit={handleSubmit}
+        className="relative z-10 bg-gray-900/80 p-6 rounded-lg w-full max-w-sm shadow-lg border border-green-500"
+      >
+        <label htmlFor="email" className="block mb-2 text-gray-300">
+          Email
+        </label>
         <input
+          id="email"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="w-full p-2 mb-4 bg-black/70 text-green-400 border border-green-500 focus:ring-2 focus:ring-neon-green rounded sm:text-lg"
+          aria-label="Email"
           required
         />
-        <label className="block mb-2 text-gray-300">Password</label>
+        <label htmlFor="password" className="block mb-2 text-gray-300">
+          Password
+        </label>
         <input
+          id="password"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="w-full p-2 mb-4 bg-black/70 text-green-400 border border-green-500 focus:ring-2 focus:ring-neon-green rounded sm:text-lg"
+          aria-label="Password"
           required
         />
         <button
@@ -76,12 +110,15 @@ export default function Login() {
           className="w-full bg-green-500 hover:bg-green-600 text-black font-bold py-2 rounded sm:text-lg transition-transform hover:scale-105"
           disabled={loading}
         >
-          {loading ? "Logging now..." : "Login"}
+          {loading ? "Signing in..." : "Login"}
         </button>
       </form>
 
       <p className="mt-6 text-gray-400 text-sm md:text-base text-center relative z-10">
-        Don't have an account? <Link href="/signup" className="text-neon-green hover:underline">Sign Up here</Link>
+        Don't have an account?{" "}
+        <Link href="/signup" className="text-neon-green hover:underline">
+          Sign Up here
+        </Link>
       </p>
     </div>
   );
