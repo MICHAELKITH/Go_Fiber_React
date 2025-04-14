@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation"; // Import useRouter
 import Link from "next/link";
 import { Toaster, toast } from "react-hot-toast";
 
@@ -7,8 +8,9 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const router = useRouter(); // Initialize useRouter
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+  const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -57,6 +59,9 @@ export default function Login() {
 
       // Store token securely (consider using cookies instead of localStorage)
       localStorage.setItem("token", data.token);
+
+      // Redirect to the dashboard
+      router.push("/dashboard");
     } catch (error: any) {
       toast.error(`❌ ${error.message}`);
     } finally {
