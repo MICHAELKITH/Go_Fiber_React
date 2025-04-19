@@ -70,61 +70,79 @@ export default function Login() {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col items-center justify-center bg-black text-white overflow-hidden px-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a] text-white">
       <Toaster />
 
-      {/* Cybersecurity Background */}
-      <div className="absolute inset-0 bg-[url('/cyber-bg.jpg')] bg-cover bg-center opacity-30"></div>
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
-      <div className="absolute top-0 left-0 w-full h-full bg-grid-white/[0.05] pointer-events-none"></div>
+      <div className="w-full max-w-md p-8 relative">
+        {/* Glowing border effect */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#00ff00] via-[#00ff00]/20 to-transparent opacity-20 blur-xl" />
+        
+        {/* Main container */}
+        <div className="relative bg-black/80 backdrop-blur-sm border border-[#00ff00]/30 rounded-lg p-8 shadow-[0_0_15px_rgba(0,255,0,0.3)]">
+          <h2 className="text-center text-3xl font-bold text-[#00ff00] mb-8">
+            LOGIN
+          </h2>
 
-      <h2 className="text-2xl md:text-4xl font-bold mb-6 text-neon-green relative z-10 text-center">
-        Login to 55 BLOCKS
-      </h2>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="uppercase text-sm text-gray-400 mb-2 block">
+                Username
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full bg-black/50 border border-[#00ff00]/30 text-[#00ff00] p-3 rounded-md 
+                focus:outline-none focus:border-[#00ff00] focus:ring-1 focus:ring-[#00ff00] 
+                placeholder-gray-500"
+                placeholder="Enter your email"
+                required
+              />
+            </div>
 
-      <form
-        onSubmit={handleSubmit}
-        className="relative z-10 bg-gray-900/80 p-6 rounded-lg w-full max-w-sm shadow-lg border border-green-500"
-      >
-        <label htmlFor="email" className="block mb-2 text-gray-300">
-          Email
-        </label>
-        <input
-          id="email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-2 mb-4 bg-black/70 text-green-400 border border-green-500 focus:ring-2 focus:ring-neon-green rounded sm:text-lg"
-          aria-label="Email"
-          required
-        />
-        <label htmlFor="password" className="block mb-2 text-gray-300">
-          Password
-        </label>
-        <input
-          id="password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-2 mb-4 bg-black/70 text-green-400 border border-green-500 focus:ring-2 focus:ring-neon-green rounded sm:text-lg"
-          aria-label="Password"
-          required
-        />
-        <button
-          type="submit"
-          className="w-full bg-green-500 hover:bg-green-600 text-black font-bold py-2 rounded sm:text-lg transition-transform hover:scale-105"
-          disabled={loading}
-        >
-          {loading ? "Signing in..." : "Login"}
-        </button>
-      </form>
+            <div>
+              <label className="uppercase text-sm text-gray-400 mb-2 block">
+                Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-black/50 border border-[#00ff00]/30 text-[#00ff00] p-3 rounded-md 
+                focus:outline-none focus:border-[#00ff00] focus:ring-1 focus:ring-[#00ff00] 
+                placeholder-gray-500"
+                placeholder="Enter your password"
+                required
+              />
+            </div>
 
-      <p className="mt-6 text-gray-400 text-sm md:text-base text-center relative z-10">
-        Don't have an account?{" "}
-        <Link href="/signup" className="text-neon-green hover:underline">
-          Sign Up here
-        </Link>
-      </p>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-[#00ff00] hover:bg-[#00dd00] text-black font-bold py-3 rounded-md
+              transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50
+              disabled:hover:scale-100 shadow-[0_0_10px_rgba(0,255,0,0.3)]"
+            >
+              {loading ? "SIGNING IN..." : "SIGN IN"}
+            </button>
+          </form>
+
+          <div className="mt-6 flex justify-between items-center text-sm">
+            <Link
+              href="/forgot-password"
+              className="text-gray-400 hover:text-[#00ff00] transition-colors"
+            >
+              FORGOT PASSWORD?
+            </Link>
+            <Link
+              href="/signup"
+              className="text-[#00ff00] hover:text-[#00ff00]/80 transition-colors"
+            >
+              SIGNUP
+            </Link>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

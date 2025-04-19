@@ -97,90 +97,108 @@ export default function Signup() {
     }
   };
 
+ 
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-black text-white px-4 relative">
+    <div className="min-h-screen flex items-center justify-center bg-[#0a0a0a] text-white">
       <Toaster />
-      <div className="absolute inset-0 bg-[url('/cyber-bg.jpg')] bg-cover bg-center opacity-20"></div>
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
 
-      <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 text-[#39FF14] relative z-10">
-        Sign Up for 55 BLOCKS
-      </h2>
+      <div className="w-full max-w-md p-8 relative">
+        {/* Glowing border effect */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#00ff00] via-[#00ff00]/20 to-transparent opacity-20 blur-xl" />
+        
+        {/* Main container */}
+        <div className="relative bg-black/80 backdrop-blur-sm border border-[#00ff00]/30 rounded-lg p-8 shadow-[0_0_15px_rgba(0,255,0,0.3)]">
+          <h2 className="text-center text-3xl font-bold text-[#00ff00] mb-8">
+            SIGN UP
+          </h2>
 
-      <form
-        onSubmit={handleSubmit}
-        className="bg-gray-900/80 p-6 sm:p-8 rounded-lg w-full max-w-sm md:max-w-md lg:max-w-lg border border-green-500 shadow-lg relative z-10"
-      >
-        <label htmlFor="name" className="block mb-2 text-gray-300 text-lg">
-          Name
-        </label>
-        <input
-          id="name"
-          type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full p-3 mb-4 bg-black/70 text-green-400 border border-green-500 focus:ring-2 focus:ring-[#39FF14] rounded outline-none transition"
-          aria-label="Name"
-          required
-        />
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <label className="uppercase text-sm text-gray-400 mb-2 block">
+                Name
+              </label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="w-full bg-black/50 border border-[#00ff00]/30 text-[#00ff00] p-3 rounded-md 
+                focus:outline-none focus:border-[#00ff00] focus:ring-1 focus:ring-[#00ff00] 
+                placeholder-gray-500"
+                placeholder="Enter your name"
+                required
+              />
+            </div>
 
-        <label htmlFor="email" className="block mb-2 text-gray-300 text-lg">
-          Email
-        </label>
-        <input
-          id="email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full p-3 mb-4 bg-black/70 text-green-400 border border-green-500 focus:ring-2 focus:ring-[#39FF14] rounded outline-none transition"
-          aria-label="Email"
-          required
-        />
+            <div>
+              <label className="uppercase text-sm text-gray-400 mb-2 block">
+                Email
+              </label>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full bg-black/50 border border-[#00ff00]/30 text-[#00ff00] p-3 rounded-md 
+                focus:outline-none focus:border-[#00ff00] focus:ring-1 focus:ring-[#00ff00] 
+                placeholder-gray-500"
+                placeholder="Enter your email"
+                required
+              />
+            </div>
 
-        <label htmlFor="password" className="block mb-2 text-gray-300 text-lg">
-          Password
-        </label>
-        <input
-          id="password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full p-3 mb-4 bg-black/70 text-green-400 border border-green-500 focus:ring-2 focus:ring-[#39FF14] rounded outline-none transition"
-          aria-label="Password"
-          required
-        />
+            <div>
+              <label className="uppercase text-sm text-gray-400 mb-2 block">
+                Password
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-black/50 border border-[#00ff00]/30 text-[#00ff00] p-3 rounded-md 
+                focus:outline-none focus:border-[#00ff00] focus:ring-1 focus:ring-[#00ff00] 
+                placeholder-gray-500"
+                placeholder="Enter your password"
+                required
+              />
+            </div>
 
-        <label
-          htmlFor="confirmPassword"
-          className="block mb-2 text-gray-300 text-lg"
-        >
-          Confirm Password
-        </label>
-        <input
-          id="confirmPassword"
-          type="password"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          className="w-full p-3 mb-4 bg-black/70 text-green-400 border border-green-500 focus:ring-2 focus:ring-[#39FF14] rounded outline-none transition"
-          aria-label="Confirm Password"
-          required
-        />
+            <div>
+              <label className="uppercase text-sm text-gray-400 mb-2 block">
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full bg-black/50 border border-[#00ff00]/30 text-[#00ff00] p-3 rounded-md 
+                focus:outline-none focus:border-[#00ff00] focus:ring-1 focus:ring-[#00ff00] 
+                placeholder-gray-500"
+                placeholder="Confirm your password"
+                required
+              />
+            </div>
 
-        <button
-          type="submit"
-          className="w-full bg-green-500 hover:bg-green-600 text-black font-bold py-3 rounded transition transform hover:scale-105 disabled:opacity-50"
-          disabled={loading}
-        >
-          {loading ? "Creating account..." : "Sign Up"}
-        </button>
-      </form>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-[#00ff00] hover:bg-[#00dd00] text-black font-bold py-3 rounded-md
+              transition-all duration-300 transform hover:scale-[1.02] disabled:opacity-50
+              disabled:hover:scale-100 shadow-[0_0_10px_rgba(0,255,0,0.3)]"
+            >
+              {loading ? "CREATING ACCOUNT..." : "SIGN UP"}
+            </button>
+          </form>
 
-      <p className="mt-4 text-gray-400 text-sm sm:text-base relative z-10">
-        Already have an account?{" "}
-        <Link href="/login" className="text-[#39FF14] hover:underline">
-          Login
-        </Link>
-      </p>
+          <div className="mt-6 text-center">
+            <Link
+              href="/login"
+              className="text-gray-400 hover:text-[#00ff00] transition-colors text-sm uppercase"
+            >
+              Already have an account? Login
+            </Link>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
