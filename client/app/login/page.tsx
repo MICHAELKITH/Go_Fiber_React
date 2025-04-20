@@ -86,7 +86,7 @@ export default function Login() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label className="uppercase text-sm text-gray-400 mb-2 block">
-                Username
+                UserName
               </label>
               <input
                 type="email"
