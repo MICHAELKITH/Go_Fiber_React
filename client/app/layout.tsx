@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   authors: [{ name: "55 BLOCKS" }],
   creator: "55 BLOCKS",
   publisher: "55 BLOCKS",
-  metadataBase: new URL('https://55blocks.com'), // Replace with your actual domain
+  metadataBase: new URL('https://55blocks.top'), // Replace with your actual domain
   openGraph: {
     type: 'website',
     title: '55 BLOCKS Cybersecurity | Advanced Security Solutions',
