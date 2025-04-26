@@ -84,7 +84,7 @@ export default function Signup() {
       setConfirmPassword("");
 
       setTimeout(() => router.push("/login"), 2000);
-    } catch (error: any) {
+    } catch (error) {
       toast.error(
         error.response?.data?.message || "❌ Registration failed!",
         {
@@ -104,7 +104,7 @@ export default function Signup() {
       <Toaster />
 
       <div className="w-full max-w-md p-8 relative">
-        {/* Glowing border effect */}
+        {/* Glowing border effects */}
         <div className="absolute inset-0 bg-gradient-to-r from-[#00ff00] via-[#00ff00]/20 to-transparent opacity-20 blur-xl" />
         
         {/* Main container */}

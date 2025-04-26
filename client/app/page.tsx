@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
-import Image from "next/image";
+
 
 import { 
   FaTwitter, FaLinkedin, FaGithub, FaShieldAlt, FaLock, 
@@ -205,7 +205,8 @@ export default function Home() {
               key={index}
               className="bg-gray-800 p-6 rounded-lg shadow-md hover:shadow-lg transition transform hover:scale-105"
             >
-              <p className="text-gray-300 italic">"{testimonial.feedback}"</p>
+              <p className="text-gray-300 italic">&quot;{testimonial.feedback}&quot;</p>
+
               <h4 className="text-green-400 mt-4 font-semibold">- {testimonial.name}</h4>
             </div>
           ))}

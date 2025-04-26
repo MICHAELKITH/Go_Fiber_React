@@ -62,7 +62,7 @@ export default function Login() {
 
       // Redirect to the dashboard
       router.push("/dashboard");
-    } catch (error: any) {
+    } catch (error) {
       toast.error(`❌ ${error.message}`);
     } finally {
       setLoading(false);
