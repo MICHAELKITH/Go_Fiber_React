@@ -26,7 +26,7 @@ export const metadata: Metadata = {
     type: 'website',
     title: '55 BLOCKS Cybersecurity | Advanced Security Solutions',
     description: 'Enterprise-grade cybersecurity solutions with AI-powered protection and end-to-end encryption.',
-    url: 'https://55blocks.com',
+    url: 'https://55blocks.top',
     siteName: '55 BLOCKS',
     images: [
       {
@@ -69,9 +69,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="canonical" href="https://55blocks.com" />
+        <link rel="canonical" href="https://55blocks.top" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.png" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
       </head>

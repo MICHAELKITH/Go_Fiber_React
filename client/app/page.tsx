@@ -6,6 +6,7 @@ import {
   FaTwitter, FaLinkedin, FaGithub, FaShieldAlt, FaLock, 
   FaUserShield, FaRocket, FaBolt, FaCrown, FaCheck 
 } from "react-icons/fa";
+import DarkWebScan from "@/components/DarkWebScan";
 
 export default function Home() {
   return (
@@ -191,15 +192,15 @@ export default function Home() {
   </div>
 </section>
 
- 
+<DarkWebScan />
 
       {/* Testimonials Section */}
       <section className="relative z-10 text-center py-20 px-6">
         <h2 className="text-3xl font-bold text-neon-green mb-6">What Our Clients Say</h2>
         <div className="max-w-4xl mx-auto grid sm:grid-cols-2 gap-6">
           {[
-            { name: "John Doe", feedback: "55 BLOCKS transformed our security infrastructure!" },
-            { name: "Jane Smith", feedback: "The best cybersecurity solution we've ever used." },
+            { name: "Safaricom", feedback: "55 BLOCKS transformed our security infrastructure!" },
+            { name: "Moringa", feedback: "The best cybersecurity solution we've ever used." },
           ].map((testimonial, index) => (
             <div
               key={index}
