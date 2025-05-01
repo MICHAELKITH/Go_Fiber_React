@@ -15,7 +15,7 @@ export default function DarkWebScan() {
     setTimeout(() => {
       setIsLoading(false);
       setResult("No vulnerabilities detected! 🎉");
-    }, 3000);
+    }, 5000);
   };
 
   return (
