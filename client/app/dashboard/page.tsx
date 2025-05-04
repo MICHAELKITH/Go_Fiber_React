@@ -70,7 +70,10 @@ const Dashboard = () => {
           <h1 className="text-2xl font-bold text-[#39FF14]">Dashboard</h1>
           <div className="flex items-center gap-4">
             <div className="relative group">
-              <button className="text-white text-xl focus:outline-none">
+              <button
+                className="text-white text-xl focus:outline-none"
+                aria-label="User Menu"
+              >
                 <FaUser />
               </button>
               <div className="absolute right-0 mt-2 bg-gray-800 text-sm rounded shadow-lg hidden group-hover:block">
@@ -105,12 +108,12 @@ const Dashboard = () => {
         </header>
 
         {/* Main Section */}
-        <main className="p-6">
+        <main className="p-16 md:ml-72">
           <p className="text-gray-300 mb-6">
-            Welcome to your dashboard! Select an option from the sidebar.
+            Activities
           </p>
 
-          {/* Example Widgets */}
+        
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
               { title: "Tasks Completed", value: "120", icon: <FaTasks /> },
@@ -119,7 +122,7 @@ const Dashboard = () => {
             ].map((widget, index) => (
               <div
                 key={index}
-                className="bg-gray-800 p-6 rounded-lg shadow-md flex items-center gap-4"
+                className="bg-gray-800 p-6 rounded-lg shadow-md flex items-center gap-4 hover:shadow-lg transition-shadow"
               >
                 <div className="text-4xl text-[#39FF14]">{widget.icon}</div>
                 <div>
