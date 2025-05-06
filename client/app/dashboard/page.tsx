@@ -53,7 +53,7 @@ const Dashboard = () => {
               }`}
               onClick={() => {
                 setActiveLink(item.title);
-                setIsSidebarOpen(false); // Close sidebar on link click
+                setIsSidebarOpen(false); 
               }}
             >
               <span className="text-xl">{item.icon}</span>
