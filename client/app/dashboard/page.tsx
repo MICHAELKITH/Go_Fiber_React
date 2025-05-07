@@ -53,7 +53,7 @@ const Dashboard = () => {
               }`}
               onClick={() => {
                 setActiveLink(item.title);
-                setIsSidebarOpen(false); 
+                setIsSidebarOpen(false); // Close sidebar on link click
               }}
             >
               <span className="text-xl">{item.icon}</span>
@@ -108,12 +108,12 @@ const Dashboard = () => {
         </header>
 
         {/* Main Section */}
-        <main className="p-16 md:ml-72">
+        <main className="p-8">
           <p className="text-gray-300 mb-6">
-            Activities
+            Welcome to your dashboard! Select an option from the sidebar.
           </p>
 
-        
+          {/* Example Widgets */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
               { title: "Tasks Completed", value: "120", icon: <FaTasks /> },
