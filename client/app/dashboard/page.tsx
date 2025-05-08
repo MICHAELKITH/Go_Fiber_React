@@ -107,10 +107,10 @@ const Dashboard = () => {
           </div>
         </header>
 
-        {/* Main Section */}
-        <main className="p-8">
+    
+        <main className="p-16 md:ml-72">
           <p className="text-gray-300 mb-6">
-            Welcome to your dashboard! Select an option from the sidebar.
+            Activities
           </p>
 
           {/* Example Widgets */}
