@@ -7,6 +7,7 @@ import {
   FaUserShield, FaRocket, FaBolt, FaCrown, FaCheck 
 } from "react-icons/fa";
 import DarkWebScan from "@/components/DarkWebScan";
+import ForensicDataRecovery from "@/components/Recovery";
 
 export default function Home() {
   return (
@@ -193,6 +194,7 @@ export default function Home() {
 </section>
 
 <DarkWebScan />
+<ForensicDataRecovery/>
 
       {/* Testimonials Section */}
       <section className="relative z-10 text-center py-20 px-6">
