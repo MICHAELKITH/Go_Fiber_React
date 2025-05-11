@@ -3,11 +3,12 @@ import Navbar from "@/components/Navbar";
 
 
 import { 
-  FaTwitter, FaLinkedin, FaGithub, FaShieldAlt, FaLock, 
+   FaShieldAlt, FaLock, 
   FaUserShield, FaRocket, FaBolt, FaCrown, FaCheck 
 } from "react-icons/fa";
 import DarkWebScan from "@/components/DarkWebScan";
 import ForensicDataRecovery from "@/components/Recovery";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
@@ -215,22 +216,9 @@ export default function Home() {
           ))}
         </div>
       </section>
+<Footer/>
 
-      {/* Footer */}
-      <footer className="relative z-10 bg-black text-gray-300 text-center py-6">
-        <p className="text-sm">&copy; {new Date().getFullYear()} 55 BLOCKS. All rights reserved.</p>
-        <div className="flex justify-center gap-4 mt-4">
-          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-            <FaTwitter className="text-2xl hover:text-neon-green transition" />
-          </a>
-          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-            <FaLinkedin className="text-2xl hover:text-neon-green transition" />
-          </a>
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-            <FaGithub className="text-2xl hover:text-neon-green transition" />
-          </a>
-        </div>
-      </footer>
+    
     </div>
   );
 }

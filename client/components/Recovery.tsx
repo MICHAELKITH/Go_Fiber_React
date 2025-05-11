@@ -8,9 +8,7 @@ export default function ForensicDataRecovery() {
       </h2>
       <div className="max-w-3xl mx-auto bg-black/40 p-8 rounded-xl border border-[#39FF14]/30 shadow-lg">
         <p className="text-gray-300 mb-6">
-          Deleted doesn’t mean gone. Forensic data recovery brings hidden
-          evidence back to life. Enter the file name or directory to begin
-          recovery.
+          Lost data isn’t lost forever. Unlock the secrets hidden in your files with cutting-edge forensic recovery technology.
         </p>
       </div>
     </section>
