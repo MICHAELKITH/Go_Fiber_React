@@ -1,6 +1,6 @@
 "use client";
 
-import { FaTwitter, FaLinkedin, FaFacebook } from "react-icons/fa";
+import { FaTwitter, FaLinkedin, FaFacebook, FaYoutube } from "react-icons/fa";
 
 export default function Footer() {
   return (
@@ -8,7 +8,7 @@ export default function Footer() {
       <p className="text-sm">&copy; {new Date().getFullYear()} 55 BLOCKS. All rights reserved.</p>
       <div className="flex justify-center gap-4 mt-4">
         <a
-          href="https://twitter.com"
+          href="https://x.com/55_Blocks_"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Twitter"
@@ -17,7 +17,7 @@ export default function Footer() {
           <FaTwitter className="text-2xl" />
         </a>
         <a
-          href="https://linkedin.com"
+          href="https://www.linkedin.com/company/102479648/admin/dashboard/"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="LinkedIn"
@@ -26,13 +26,22 @@ export default function Footer() {
           <FaLinkedin className="text-2xl" />
         </a>
         <a
-          href="https://facebook.com"
+          href="https://www.facebook.com/groups/406274981794527"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Facebook"
           className="hover:text-neon-green transition"
         >
           <FaFacebook className="text-2xl" />
+        </a>
+        <a
+          href="https://www.youtube.com/channel/UCFqOJyco8diCLJ7vQwyfIXw"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="YouTube"
+          className="hover:text-neon-green transition"
+        >
+          <FaYoutube className="text-2xl" />
         </a>
       </div>
     </footer>
