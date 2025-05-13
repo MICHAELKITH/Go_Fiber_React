@@ -9,11 +9,13 @@ import {
 import DarkWebScan from "@/components/DarkWebScan";
 import ForensicDataRecovery from "@/components/Recovery";
 import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar";
 
 export default function Home() {
   return (
+    
     <div className=" min-h-screen bg-[#0a0a0a] text-white overflow-hidden mt-8">
-      
+       <Navbar/>
 
       {/* Enhanced Cybersecurity Background */}
       <div className="absolute inset-0 bg-[url('/cyber-bg.jpg')] bg-cover bg-center opacity-20"></div>
