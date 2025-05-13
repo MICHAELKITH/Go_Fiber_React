@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
+
 
 
 import { 
@@ -12,8 +12,8 @@ import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen bg-[#0a0a0a] text-white overflow-hidden">
-      <Navbar />
+    <div className=" min-h-screen bg-[#0a0a0a] text-white overflow-hidden mt-8">
+      
 
       {/* Enhanced Cybersecurity Background */}
       <div className="absolute inset-0 bg-[url('/cyber-bg.jpg')] bg-cover bg-center opacity-20"></div>
@@ -32,7 +32,7 @@ export default function Home() {
       </div>
 
       {/* Main Content with Enhanced Animation */}
-      <main className="relative flex flex-col items-center justify-center text-center py-20 px-6 z-10">
+      <main className="relative flex flex-col items-center justify-center text-center py-20 px-6 z-10 mt-12">
         <div className="relative">
           <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-[#39FF14] to-[#00ff00] animate-pulse">
             55 BLOCKS

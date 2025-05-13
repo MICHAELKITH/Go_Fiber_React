@@ -1,6 +1,7 @@
-"use client"
+"use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 
@@ -8,11 +9,13 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <nav className="bg-gray-900 text-white py-4 px-6 flex justify-between items-center relative shadow-lg">
-      {/* Brand Name */}
-      <Link href="/" className="text-2xl font-bold text-[#39FF14] hover:scale-105 transition-transform">
-        55 BLOCKS
-      </Link>
+    <nav className="bg-gray-900 text-white py-4 px-6 flex justify-between items-center  shadow-lg fixed top-0 left-0 w-full z-999 mb-12">
+
+      
+    {/* Brand Logo + Name */}
+<Link href="/" className="flex items-center gap-2 text-2xl font-bold text-[#39FF14] hover:scale-105 transition-transform">
+  <Image src="/55logo.png" alt="55 Blocks Logo" width={72} height={72} />
+</Link>
 
       {/* Desktop Links */}
       <div className="hidden md:flex gap-6">
