@@ -1,17 +1,19 @@
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
+
 
 
 import { 
-  FaTwitter, FaLinkedin, FaGithub, FaShieldAlt, FaLock, 
+   FaShieldAlt, FaLock, 
   FaUserShield, FaRocket, FaBolt, FaCrown, FaCheck 
 } from "react-icons/fa";
 import DarkWebScan from "@/components/DarkWebScan";
+import ForensicDataRecovery from "@/components/Recovery";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen bg-[#0a0a0a] text-white overflow-hidden">
-      <Navbar />
+    <div className=" min-h-screen bg-[#0a0a0a] text-white overflow-hidden mt-8">
+      
 
       {/* Enhanced Cybersecurity Background */}
       <div className="absolute inset-0 bg-[url('/cyber-bg.jpg')] bg-cover bg-center opacity-20"></div>
@@ -30,7 +32,7 @@ export default function Home() {
       </div>
 
       {/* Main Content with Enhanced Animation */}
-      <main className="relative flex flex-col items-center justify-center text-center py-20 px-6 z-10">
+      <main className="relative flex flex-col items-center justify-center text-center py-20 px-6 z-10 mt-12">
         <div className="relative">
           <h1 className="text-4xl sm:text-6xl md:text-7xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-[#39FF14] to-[#00ff00] animate-pulse">
             55 BLOCKS
@@ -193,6 +195,7 @@ export default function Home() {
 </section>
 
 <DarkWebScan />
+<ForensicDataRecovery/>
 
       {/* Testimonials Section */}
       <section className="relative z-10 text-center py-20 px-6">
@@ -213,22 +216,9 @@ export default function Home() {
           ))}
         </div>
       </section>
+<Footer/>
 
-      {/* Footer */}
-      <footer className="relative z-10 bg-black text-gray-300 text-center py-6">
-        <p className="text-sm">&copy; {new Date().getFullYear()} 55 BLOCKS. All rights reserved.</p>
-        <div className="flex justify-center gap-4 mt-4">
-          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
-            <FaTwitter className="text-2xl hover:text-neon-green transition" />
-          </a>
-          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-            <FaLinkedin className="text-2xl hover:text-neon-green transition" />
-          </a>
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-            <FaGithub className="text-2xl hover:text-neon-green transition" />
-          </a>
-        </div>
-      </footer>
+    
     </div>
   );
 }

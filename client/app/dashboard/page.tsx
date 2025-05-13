@@ -107,13 +107,13 @@ const Dashboard = () => {
           </div>
         </header>
 
-        {/* Main Section */}
+    
         <main className="p-16 md:ml-72">
           <p className="text-gray-300 mb-6">
             Activities
           </p>
 
-        
+          {/* Example Widgets */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
               { title: "Tasks Completed", value: "120", icon: <FaTasks /> },
