@@ -10,6 +10,7 @@ import DarkWebScan from "@/components/DarkWebScan";
 import ForensicDataRecovery from "@/components/Recovery";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import OtherServices from "@/components/OtherServices";
 
 export default function Home() {
   return (
@@ -198,6 +199,7 @@ export default function Home() {
 
 <DarkWebScan />
 <ForensicDataRecovery/>
+<OtherServices/> 
 
       {/* Testimonials Section */}
       <section className="relative z-10 text-center py-20 px-6">
