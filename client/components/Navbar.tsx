@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+// import Image from "next/image";
 import { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 
@@ -13,7 +13,8 @@ export default function Navbar() {
 
       {/* Brand Logo + Name */}
       <Link href="/" className="flex items-center gap-2 text-2xl font-bold text-[#39FF14] hover:scale-105 transition-transform">
-        <Image src="/55logo.png" alt="55 Blocks" width={72} height={72} />
+        {/* <Image src="/55logo.png" alt="" width={72} height={72} /> */}
+        <span className="text-[#39FF14] italic md:not-italic">55 BLOCKS</span>
       </Link>
 
       {/* Desktop Links */}
