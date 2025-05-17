@@ -10,7 +10,7 @@ import (
 	"github.com/MICHAELKITH/todo_app/models"
 )
 
-// GenerateJWT creates a JWT token for a given user.
+// GenerateJWT creates a JWT token for a  user.
 func GenerateJWT(user models.User) (string, error) {
 	secret, exists := os.LookupEnv("JWT_SECRET")
 	if !exists || secret == "" {
