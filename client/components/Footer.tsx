@@ -26,7 +26,7 @@ export default function Footer() {
           <FaLinkedin className="text-2xl" />
         </a>
         <a
-          href="https://www.facebook.com/groups/406274981794527"
+          href="https://www.facebook.com/55blockinc"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="Facebook"
