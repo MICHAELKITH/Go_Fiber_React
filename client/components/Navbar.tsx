@@ -13,9 +13,13 @@ export default function Navbar() {
 
       {/* Brand Logo + Name */}
       <Link href="/" className="flex items-center gap-2 text-2xl font-bold text-[#39FF14] hover:scale-105 transition-transform">
-        {/* <Image src="/55logo.png" alt="" width={72} height={72} /> */}
-        <span className="text-[#39FF14] italic md:not-italic">55 BLOCKS</span>
-      </Link>
+  <div className="flex gap-2">
+    <span className="text-[#39FF14] italic md:not-italic">
+      55 <span className="text-white">BLOCKS</span>
+    </span>
+    <span className="text-white">Cyber Security</span>
+  </div>
+</Link>
 
       {/* Desktop Links */}
       <div className="hidden md:flex gap-6">

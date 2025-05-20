@@ -5,7 +5,7 @@ import { FaTwitter, FaLinkedin, FaFacebook, FaYoutube } from "react-icons/fa";
 export default function Footer() {
   return (
     <footer className="relative z-10 bg-black text-gray-300 text-center py-6">
-      <p className="text-sm">&copy; {new Date().getFullYear()} 55 BLOCKS. All rights reserved.</p>
+      <p className="text-sm">&copy; {new Date().getFullYear()} 55 BLOCKS Inc . All rights reserved.</p>
       <div className="flex justify-center gap-4 mt-4">
         <a
           href="https://x.com/55_Blocks_"
