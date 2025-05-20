@@ -10,14 +10,18 @@ export default function Navbar() {
 
   return (
     <nav className=" text-white py-4 px-6 flex justify-between items-center fixed top-0 left-0 w-full z-50 mb-12 rounded-[20px] backdrop-blur-md bg-opacity-90 shadow-[8px_8px_15px_rgba(0,0,0,0.5),_-8px_-8px_15px_rgba(255,255,255,0.05)]">
-
       {/* Brand Logo + Name */}
-      <Link href="/" className="flex items-center gap-2 text-2xl font-bold text-[#39FF14] hover:scale-105 transition-transform">
-  <div className="flex gap-2">
+      <Link
+  href="/"
+  className="flex flex-col items-center text-2xl font-bold text-[#39FF14] hover:scale-105 transition-transform"
+>
+  <div className="flex flex-col items-center gap-1">
     <span className="text-[#39FF14] italic md:not-italic">
       55 <span className="text-white">BLOCKS</span>
     </span>
-    <span className="text-white">Cyber Security</span>
+    <span className="text-white uppercase font-light text-sm">
+      CYBER SECURITY
+    </span>
   </div>
 </Link>
 
@@ -37,7 +41,11 @@ export default function Navbar() {
         onClick={() => setIsMenuOpen(!isMenuOpen)}
         aria-label="Toggle Menu"
       >
-        {isMenuOpen ? <FaTimes className="text-[#39FF14]" /> : <FaBars className="text-[#39FF14]" />}
+        {isMenuOpen ? (
+          <FaTimes className="text-[#39FF14]" />
+        ) : (
+          <FaBars className="text-[#39FF14]" />
+        )}
       </button>
 
       {/* Mobile Menu */}
