@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   authors: [{ name: "55 BLOCKS" }],
   creator: "55 BLOCKS",
   publisher: "55 BLOCKS",
-  metadataBase: new URL('https://55blocks.top'), // Replace with your actual domain
+  metadataBase: new URL('https://55blocks.top'), 
   openGraph: {
     type: 'website',
     title: '55 BLOCKS Cybersecurity | Advanced Security Solutions',
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
     siteName: '55 BLOCKS',
     images: [
       {
-        url: '/og-image.jpg', // Add your OG image
+        url: '/logo55.png', 
         width: 1200,
         height: 630,
         alt: '55 BLOCKS Cybersecurity',
@@ -42,8 +42,8 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: '55 BLOCKS Cybersecurity',
     description: 'Enterprise-grade cybersecurity solutions with AI-powered protection.',
-    creator: '@55blocks', // Replace with your Twitter handle
-    images: ['/twitter-image.jpg'], // Add your Twitter card image
+    creator: '@55blocks', 
+    images: ['/logo55.png'], 
   },
   robots: {
     index: true,
@@ -72,7 +72,7 @@ export default function RootLayout({
       <head>
         <link rel="canonical" href="https://55blocks.top" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.png" />
+        <link rel="icon" href="/logo55.png" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link rel="manifest" href="/manifest.json" />
       </head>
