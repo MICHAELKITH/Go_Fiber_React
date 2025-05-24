@@ -1,14 +1,45 @@
-"use client"
-
+"use client";
 
 import React, { useState } from "react";
 import { FaRocket, FaBolt, FaCrown, FaCheck } from "react-icons/fa";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe("your-publishable-key-here"); 
 
 const Pricing = () => {
   const [activePlan, setActivePlan] = useState<number | null>(null);
 
   const toggleAccordion = (index: number) => {
     setActivePlan(activePlan === index ? null : index);
+  };
+
+  const handlePayment = async (planName: string, planPrice: number) => {
+    const stripe = await stripePromise;
+
+    if (!stripe) {
+      console.error("Stripe failed to load.");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ planName, planPrice }),
+      });
+
+      const session = await response.json();
+
+      if (session.id) {
+        await stripe.redirectToCheckout({ sessionId: session.id });
+      } else {
+        console.error("Failed to create Stripe session.");
+      }
+    } catch (error) {
+      console.error("Error during payment:", error);
+    }
   };
 
   return (
@@ -21,7 +52,7 @@ const Pricing = () => {
           {
             icon: <FaRocket />,
             name: "Starter",
-            price: "$29",
+            price: 29,
             period: "/month",
             features: [
               "Basic Threat Detection",
@@ -35,7 +66,7 @@ const Pricing = () => {
           {
             icon: <FaBolt />,
             name: "Professional",
-            price: "$99",
+            price: 99,
             period: "/month",
             features: [
               "Advanced Threat Detection",
@@ -51,7 +82,7 @@ const Pricing = () => {
           {
             icon: <FaCrown />,
             name: "Enterprise",
-            price: "$299",
+            price: 299,
             period: "/month",
             features: [
               "Custom Security Solutions",
@@ -84,7 +115,7 @@ const Pricing = () => {
             </h3>
             <div className="mb-6">
               <span className="text-4xl font-bold text-white">
-                {plan.price}
+                ${plan.price}
               </span>
               <span className="text-gray-400">{plan.period}</span>
             </div>
@@ -97,27 +128,12 @@ const Pricing = () => {
               ))}
             </ul>
             <button
-              onClick={() => toggleAccordion(index)}
+              onClick={() => handlePayment(plan.name, plan.price)}
               className={`w-full py-3 px-6 rounded-lg font-bold transition-all duration-300 
                 hover:shadow-[0_0_15px_rgba(57,255,20,0.5)] ${plan.btnStyle}`}
             >
               {plan.btnText}
             </button>
-
-            {/* Accordion Content */}
-            {activePlan === index && (
-              <div className="mt-4 bg-[#121212] p-4 rounded-lg text-left text-gray-300">
-                <h4 className="text-lg font-bold text-[#39FF14] mb-2">
-                  Payment Details
-                </h4>
-                <p className="text-sm mb-2">
-                  Proceed to payment for the <strong>{plan.name}</strong> plan.
-                </p>
-                <button className="w-full bg-[#39FF14] hover:bg-[#32CD32] text-black font-bold py-2 px-4 rounded-md transition-all duration-300 transform hover:scale-105">
-                  Pay Now
-                </button>
-              </div>
-            )}
           </div>
         ))}
       </div>
