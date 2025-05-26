@@ -1,17 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
+// import React, { useState } from "react";
 import { FaRocket, FaBolt, FaCrown, FaCheck } from "react-icons/fa";
 import { loadStripe } from "@stripe/stripe-js";
 
 const stripePromise = loadStripe("your-publishable-key-here"); 
 
 const Pricing = () => {
-  const [activePlan, setActivePlan] = useState<number | null>(null);
+  // const [activePlan, setActivePlan] = useState<number | null>(null);
 
-  const toggleAccordion = (index: number) => {
-    setActivePlan(activePlan === index ? null : index);
-  };
+  // const toggleAccordion = (index: number) => {
+  //   setActivePlan(activePlan === index ? null : index);
+  // };
 
   const handlePayment = async (planName: string, planPrice: number) => {
     const stripe = await stripePromise;
