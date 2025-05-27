@@ -1,19 +1,62 @@
 "use client";
 
-// import React, { useState } from "react";
 import { FaRocket, FaBolt, FaCrown, FaCheck } from "react-icons/fa";
 import { loadStripe } from "@stripe/stripe-js";
+import { useCallback } from "react";
 
-const stripePromise = loadStripe("your-publishable-key-here"); 
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
-const Pricing = () => {
-  // const [activePlan, setActivePlan] = useState<number | null>(null);
+const plans = [
+  {
+    icon: <FaRocket />,
+    name: "Starter",
+    price: 29,
+    period: "/month",
+    features: [
+      "Basic Threat Detection",
+      "Email Security",
+      "24/7 Support",
+      "Up to 5 Users",
+    ],
+    btnText: "Get Started",
+    btnStyle: "border-2 border-[#39FF14] text-[#39FF14]",
+  },
+  {
+    icon: <FaBolt />,
+    name: "Professional",
+    price: 99,
+    period: "/month",
+    features: [
+      "Advanced Threat Detection",
+      "Email & Cloud Security",
+      "Priority Support",
+      "Up to 20 Users",
+      "Real-time Monitoring",
+    ],
+    btnText: "Go Pro",
+    btnStyle: "bg-[#39FF14] text-black",
+    popular: true,
+  },
+  {
+    icon: <FaCrown />,
+    name: "Enterprise",
+    price: 299,
+    period: "/month",
+    features: [
+      "Custom Security Solutions",
+      "Full Infrastructure Protection",
+      "24/7 Dedicated Support",
+      "Unlimited Users",
+      "AI-Powered Analysis",
+      "Custom Integration",
+    ],
+    btnText: "Contact Sales",
+    btnStyle: "border-2 border-[#39FF14] text-[#39FF14]",
+  },
+];
 
-  // const toggleAccordion = (index: number) => {
-  //   setActivePlan(activePlan === index ? null : index);
-  // };
-
-  const handlePayment = async (planName: string, planPrice: number) => {
+export default function Pricing() {
+  const handlePayment = useCallback(async (planName: string, planPrice: number) => {
     const stripe = await stripePromise;
 
     if (!stripe) {
@@ -22,11 +65,9 @@ const Pricing = () => {
     }
 
     try {
-      const response = await fetch("/api/create-checkout-session", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/create-checkout-session`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ planName, planPrice }),
       });
 
@@ -40,7 +81,7 @@ const Pricing = () => {
     } catch (error) {
       console.error("Error during payment:", error);
     }
-  };
+  }, []);
 
   return (
     <section className="relative z-10 py-20 px-6">
@@ -48,54 +89,7 @@ const Pricing = () => {
         Choose Your Protection Level
       </h2>
       <div className="max-w-6xl mx-auto grid md:grid-cols-3 gap-8">
-        {[
-          {
-            icon: <FaRocket />,
-            name: "Starter",
-            price: 29,
-            period: "/month",
-            features: [
-              "Basic Threat Detection",
-              "Email Security",
-              "24/7 Support",
-              "Up to 5 Users",
-            ],
-            btnText: "Get Started",
-            btnStyle: "border-2 border-[#39FF14] text-[#39FF14]",
-          },
-          {
-            icon: <FaBolt />,
-            name: "Professional",
-            price: 99,
-            period: "/month",
-            features: [
-              "Advanced Threat Detection",
-              "Email & Cloud Security",
-              "Priority Support",
-              "Up to 20 Users",
-              "Real-time Monitoring",
-            ],
-            btnText: "Go Pro",
-            btnStyle: "bg-[#39FF14] text-black",
-            popular: true,
-          },
-          {
-            icon: <FaCrown />,
-            name: "Enterprise",
-            price: 299,
-            period: "/month",
-            features: [
-              "Custom Security Solutions",
-              "Full Infrastructure Protection",
-              "24/7 Dedicated Support",
-              "Unlimited Users",
-              "AI-Powered Analysis",
-              "Custom Integration",
-            ],
-            btnText: "Contact Sales",
-            btnStyle: "border-2 border-[#39FF14] text-[#39FF14]",
-          },
-        ].map((plan, index) => (
+        {plans.map((plan, index) => (
           <div
             key={index}
             className={`relative group p-8 bg-black/40 rounded-xl border ${
@@ -139,6 +133,4 @@ const Pricing = () => {
       </div>
     </section>
   );
-};
-
-export default Pricing;
+}
