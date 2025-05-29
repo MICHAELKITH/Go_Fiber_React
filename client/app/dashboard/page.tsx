@@ -100,7 +100,7 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex">
+    <div className="min-h-screen bg-gray-900 text-white flex bg-gradient-to-br from-black via-gray-900 to-red-900/30">
       {/* Sidebar */}
       <aside
         className={`fixed top-0 left-0 h-full bg-gray-800 p-6 shadow-lg transform ${

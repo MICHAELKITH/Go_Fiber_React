@@ -19,7 +19,7 @@ const plans = [
       "Up to 5 Users",
     ],
     btnText: "Get Started",
-    btnStyle: "border-2 border-[#39FF14] text-[#39FF14]",
+    btnStyle: "border-2 border-[#39FF14] text-[#39FF14] cursor-pointer",
   },
   {
     icon: <FaBolt />,
@@ -34,7 +34,7 @@ const plans = [
       "Real-time Monitoring",
     ],
     btnText: "Go Pro",
-    btnStyle: "bg-[#39FF14] text-black",
+    btnStyle: "bg-[#39FF14] text-black cursor-pointer",
     popular: true,
   },
   {
@@ -51,7 +51,7 @@ const plans = [
       "Custom Integration",
     ],
     btnText: "Contact Sales",
-    btnStyle: "border-2 border-[#39FF14] text-[#39FF14]",
+    btnStyle: "border-2 border-[#39FF14] text-[#39FF14] cursor-pointer",
   },
 ];
 
