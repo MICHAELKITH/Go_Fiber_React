@@ -68,7 +68,12 @@ export default function Pricing() {
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/create-checkout-session`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ planName, planPrice }),
+        body: JSON.stringify({
+          planName,
+          planPrice,
+          success_url: `${window.location.origin}/success`,
+          cancel_url: `${window.location.origin}/cancel`,
+        }),
       });
 
       const session = await response.json();

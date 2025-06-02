@@ -51,7 +51,9 @@ const Dashboard = () => {
           setUsername(data.name || data.email || "User");
         }
       } catch (err) {
-        // handle error (optional)
+        // Handle fetch error
+        setUsername("User");
+        console.error("Error fetching user:", err);
       }
     };
     fetchUser();

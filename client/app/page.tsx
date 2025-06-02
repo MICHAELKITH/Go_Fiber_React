@@ -11,6 +11,7 @@ import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import OtherServices from "@/components/OtherServices";
 import Pricing from "@/components/Pricing";
+import Donation from "@/components/Donation";
 
 export default function Home() {
   return (
@@ -98,7 +99,7 @@ export default function Home() {
         </div>
       </section>
 
-
+<Donation/>
 <Pricing/>
 <DarkWebScan />
 <ForensicDataRecovery/>
