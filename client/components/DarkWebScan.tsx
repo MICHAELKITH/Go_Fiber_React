@@ -9,40 +9,57 @@ export default function DarkWebScan() {
   const [email, setEmail] = useState("");
   const [progress, setProgress] = useState(0);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
     setResult("");
     setProgress(0);
-    setTerminalLogs(["[00:00] Initializing scan...", `[00:01] Editing: ${email}`]);
+    setTerminalLogs(["[00:00] Initializing scan..."]);
 
-    // Simulate terminal logs during the loading process
-    const logSteps = [
-      "Connecting to dark web databases...",
-      "Fetching breach records...",
-      "Analyzing data...",
-      "Installing dependencies...",
-      "Scanning for vulnerabilities...",
-      "Checking for data breaches...",
-      "Validating email against known leaks...",
-      "Cross-referencing with dark web forums...",
-      "Analyzing patterns in breach data...",
-      "Finalizing scan results...",
-    ];
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:4000"}/check-email?email=${encodeURIComponent(email)}`
+      );
+      const data = await res.json();
 
-    let step = 0;
-    const interval = setInterval(() => {
-      if (step < logSteps.length) {
-        const timestamp = `[00:${(step + 2).toString().padStart(2, "0")}]`; // Add timestamps
-        setTerminalLogs((prevLogs) => [...prevLogs, `${timestamp} ${logSteps[step]}`]);
-        setProgress((prev) => prev + 10); // Update progress bar (10% per step)
-        step++;
-      } else {
-        clearInterval(interval);
-        setIsLoading(false);
-        setResult("No vulnerabilities detected! 🎉");
+      // Simulate log steps based on real fetch progress
+      const logSteps = [
+        "Connecting to dark web databases...",
+        "Fetching breach records...",
+        "Analyzing data...",
+        "Checking for data breaches...",
+        "Validating email against known leaks...",
+        "Cross-referencing with dark web forums...",
+        "Analyzing patterns in breach data...",
+        "Finalizing scan results...",
+      ];
+
+      for (let step = 0; step < logSteps.length; step++) {
+        setTerminalLogs((prevLogs) => [
+          ...prevLogs,
+          `[00:${(step + 1).toString().padStart(2, "0")}] ${logSteps[step]}`,
+        ]);
+        setProgress(Math.round(((step + 1) / logSteps.length) * 100));
+        // Small delay for UX, but not as slow as before
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise((resolve) => setTimeout(resolve, 300));
       }
-    }, 6000); // Add a new log every 6 seconds (10 steps x 6 seconds = 60 seconds)
+
+      setIsLoading(false);
+      setResult(
+        data.breached
+          ? "⚠️ Your email was found in a breach!"
+          : "✅ No vulnerabilities detected! 🎉"
+      );
+    } catch (error) {
+      setIsLoading(false);
+      setResult("❌ Error scanning your email.");
+      setTerminalLogs((prevLogs) => [
+        ...prevLogs,
+        "[ERROR] Failed to complete scan.",
+      ]);
+      console.error("Scan error:", error);
+    }
   };
 
   const handleReset = () => {
@@ -66,20 +83,22 @@ export default function DarkWebScan() {
           <form onSubmit={handleSubmit}>
             <input
               type="email"
-              placeholder={email ? `Editing: ${email}` : "Enter your email"}
+              placeholder="Enter your email"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value);
-                setTerminalLogs([`[00:00] Editing: ${e.target.value}`]); // Update terminal logs while typing
+                setTerminalLogs([]);
               }}
               className="w-full p-3 mb-4 bg-black/70 text-[#39FF14] border border-[#39FF14]/30 rounded-md focus:outline-none focus:ring-2 focus:ring-[#39FF14]"
               required
+              disabled={isLoading}
             />
             <button
               type="submit"
               className="w-full bg-[#39FF14] hover:bg-[#32CD32] text-black font-bold py-3 rounded-md transition-all duration-300 transform hover:scale-105"
+              disabled={isLoading}
             >
-              Scan Now
+              {isLoading ? "Scanning..." : "Scan Now"}
             </button>
           </form>
         )}

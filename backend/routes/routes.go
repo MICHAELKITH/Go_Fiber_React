@@ -12,6 +12,8 @@ func SetupRoutes(app *fiber.App) {
 	app.Post("/login", controllers.Login)
 	app.Post("/create-checkout-session", controllers.CreateCheckoutSession)
 
+	app.Get("/check-email", controllers.CheckEmailBreach)
+
 	// Group protected routes
 	protected := app.Group("/api", middlewares.AuthMiddleware)
 	protected.Get("/todos", controllers.GetTodo)
