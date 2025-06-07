@@ -61,7 +61,7 @@ func Signup(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Password must be at least 6 characters long"})
 	}
 
-	// Check if user already exists
+	// Check if user already exists in database 
 	exists, err := models.UserExists(req.Email)
 	if err != nil {
 		log.Println("Database error:", err)
