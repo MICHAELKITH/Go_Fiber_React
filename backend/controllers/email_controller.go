@@ -15,7 +15,7 @@ func CheckEmailBreach(c *fiber.Ctx) error {
 			"error": "Email is required",
 		})
 	}
-//api fectching 
+//api fectching for darkweb screening
 	url := fmt.Sprintf("https://haveibeenpwned.com/api/v3/breachedaccount/%s", email)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
