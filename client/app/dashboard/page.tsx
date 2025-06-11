@@ -33,6 +33,7 @@ const Dashboard = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeLink, setActiveLink] = useState("Dashboard");
   const [username, setUsername] = useState("User");
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   // Fetch user info on mount
   useEffect(() => {
@@ -132,7 +133,7 @@ const Dashboard = () => {
                 setActiveLink(item.title);
                 setIsSidebarOpen(false);
                 if (item.title === "Logout") {
-                  window.location.href = "/";
+                  setShowLogoutModal(true); // Show modal instead of redirect
                 }
               }}
             >
@@ -142,6 +143,32 @@ const Dashboard = () => {
           ))}
         </nav>
       </aside>
+      {/* Logout Modal */}
+      {showLogoutModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+          <div className="bg-gray-800 rounded-lg p-8 shadow-lg max-w-xs w-full text-center">
+            <h3 className="text-xl font-bold mb-4 text-[#39FF14]">Logout?</h3>
+            <p className="mb-6 text-gray-300">Are you sure you want to logout?</p>
+            <div className="flex justify-center gap-4">
+              <button
+                className="bg-[#39FF14] text-black font-bold px-6 py-2 rounded hover:bg-lime-500 transition"
+                onClick={() => {
+                  localStorage.removeItem("token");
+                  window.location.href = "/";
+                }}
+              >
+                OK
+              </button>
+              <button
+                className="bg-gray-700 text-white font-bold px-6 py-2 rounded hover:bg-gray-600 transition"
+                onClick={() => setShowLogoutModal(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Content */}
       <div className="flex-1">
