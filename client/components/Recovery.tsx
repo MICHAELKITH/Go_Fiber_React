@@ -15,7 +15,7 @@ export default function ForensicDataRecovery() {
 
       {/* Subtitle */}
       <p className="text-gray-400 max-w-2xl mx-auto text-lg mb-10">
-        Recover what`&apos;`s lost. Reveal hidden truths in digital evidence using advanced forensic tools and AI-powered recovery.
+        Recover what&apos;s lost. Reveal hidden truths in digital evidence using advanced forensic tools and AI-powered recovery.
       </p>
 
       {/* CTA Button */}
