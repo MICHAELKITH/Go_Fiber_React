@@ -10,6 +10,9 @@ func SetupRoutes(app *fiber.App) {
 	// Public routes
 	app.Post("/signup", controllers.Signup)
 	app.Post("/login", controllers.Login)
+	app.Post("/create-checkout-session", controllers.CreateCheckoutSession)
+
+	app.Get("/check-email", controllers.CheckEmailBreach)
 
 	// Group protected routes
 	protected := app.Group("/api", middlewares.AuthMiddleware)

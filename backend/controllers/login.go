@@ -1,19 +1,21 @@
 package controllers
 
 import (
-	"fmt"
-	"log"
-	"os"
-	"strings"
-	"time"
+    "fmt"
+    "log"
+    "os"
+    "strings"
+    "time"
 
-	"github.com/joho/godotenv"
-	"github.com/MICHAELKITH/todo_app/models"
-	"github.com/gofiber/fiber/v2"
-	"github.com/golang-jwt/jwt/v5"
-	"golang.org/x/crypto/bcrypt"
+    "github.com/joho/godotenv"
+    "github.com/MICHAELKITH/todo_app/models"
+    "github.com/gofiber/fiber/v2"
+    "github.com/golang-jwt/jwt/v5"
+    "golang.org/x/crypto/bcrypt"
+
+    "github.com/stripe/stripe-go/v74"
+    "github.com/stripe/stripe-go/v74/checkout/session"
 )
-
 // Load environment variables
 func init() {
 	if err := godotenv.Load(); err != nil {
@@ -59,7 +61,7 @@ func Signup(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Password must be at least 6 characters long"})
 	}
 
-	// Check if user already exists
+	// Check if user already exists in database 
 	exists, err := models.UserExists(req.Email)
 	if err != nil {
 		log.Println("Database error:", err)
@@ -177,4 +179,41 @@ func Protected(c *fiber.Ctx) error {
 		"message": "Access granted to protected route",
 		"email":   email,
 	})
+}
+
+// POST /create-checkout-session
+func CreateCheckoutSession(c *fiber.Ctx) error {
+    var req struct {
+        PlanName  string  `json:"planName"`
+        PlanPrice float64 `json:"planPrice"`
+    }
+    if err := c.BodyParser(&req); err != nil {
+        return c.Status(400).JSON(fiber.Map{"error": "Invalid request"})
+    }
+
+    stripe.Key = os.Getenv("STRIPE_SECRET_KEY")
+    params := &stripe.CheckoutSessionParams{
+        PaymentMethodTypes: stripe.StringSlice([]string{"card"}),
+        LineItems: []*stripe.CheckoutSessionLineItemParams{
+            {
+                PriceData: &stripe.CheckoutSessionLineItemPriceDataParams{
+                    Currency: stripe.String("usd"),
+                    ProductData: &stripe.CheckoutSessionLineItemPriceDataProductDataParams{
+                        Name: stripe.String(req.PlanName),
+                    },
+                    UnitAmount: stripe.Int64(int64(req.PlanPrice * 100)),
+                },
+                Quantity: stripe.Int64(1),
+            },
+        },
+        Mode:       stripe.String(string(stripe.CheckoutSessionModePayment)),
+        SuccessURL: stripe.String("http://localhost:3000/success"),
+        CancelURL:  stripe.String("http://localhost:3000/cancel"),
+    }
+    s, err := session.New(params)
+    if err != nil {
+        log.Println("Stripe session error:", err)
+        return c.Status(500).JSON(fiber.Map{"error": "Stripe error"})
+    }
+    return c.JSON(fiber.Map{"id": s.ID})
 }

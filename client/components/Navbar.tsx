@@ -1,6 +1,7 @@
-"use client"
+"use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 
@@ -8,11 +9,28 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <nav className="bg-gray-900 text-white py-4 px-6 flex justify-between items-center relative shadow-lg">
-      {/* Brand Name */}
-      <Link href="/" className="text-2xl font-bold text-[#39FF14] hover:scale-105 transition-transform">
-        55 BLOCKS
-      </Link>
+    <nav className=" text-white py-4 px-6 flex justify-between items-center fixed top-0 left-0 w-full z-50 mb-12 rounded-[20px] backdrop-blur-md bg-opacity-90 shadow-[8px_8px_15px_rgba(0,0,0,0.5),_-8px_-8px_15px_rgba(255,255,255,0.05)]">
+      {/* Brand Logo + Name */}
+      <div className="flex items-center gap-2">
+        <Image
+          src="/logo55.png"
+          alt="55 Blocks Logo"
+          width={72}
+          height={72}
+          className="hidden sm:block"
+        />
+        <Link
+          href="/"
+          className="flex flex-col items-center text-2xl font-bold text-[#39FF14] hover:scale-105 transition-transform"
+        >
+          <span className="text-[#39FF14] italic">
+            55 <span className="text-white">BLOCKS</span>
+          </span>
+          <span className="text-white uppercase font-light text-sm">
+            CYBER SECURITY
+          </span>
+        </Link>
+      </div>
 
       {/* Desktop Links */}
       <div className="hidden md:flex gap-6">
@@ -26,16 +44,20 @@ export default function Navbar() {
 
       {/* Mobile Menu Icon */}
       <button
-        className="md:hidden text-2xl focus:outline-none"
+        className="md:hidden text-2xl focus:outline-none neumorphic-button text-[#39FF14]"
         onClick={() => setIsMenuOpen(!isMenuOpen)}
         aria-label="Toggle Menu"
       >
-        {isMenuOpen ? <FaTimes /> : <FaBars />}
+        {isMenuOpen ? (
+          <FaTimes className="text-[#39FF14]" />
+        ) : (
+          <FaBars className="text-[#39FF14]" />
+        )}
       </button>
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="absolute top-full left-0 w-full bg-gray-800 text-center py-4 shadow-lg md:hidden">
+        <div className="absolute top-full left-2 right-2 bg-[#121212] text-center py-4 mt-2 rounded-[20px] shadow-[8px_8px_15px_rgba(0,0,0,0.5),_-8px_-8px_15px_rgba(255,255,255,0.05)] transition-all duration-300 md:hidden">
           <Link
             href="/login"
             className="block py-2 text-lg hover:text-[#39FF14] transition"

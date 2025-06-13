@@ -43,7 +43,7 @@ func main() {
 
 	// Enable CORS
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     "http://localhost:3000", // Adjust based on frontend URL
+		AllowOrigins:     "http://localhost:3000", 
 		AllowMethods:     "GET,POST,PUT,DELETE,OPTIONS",
 		AllowHeaders:     "Content-Type, Authorization",
 		AllowCredentials: true,

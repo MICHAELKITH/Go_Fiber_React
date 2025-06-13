@@ -72,26 +72,27 @@ export default function Signup() {
         email,
         password,
       });
-
+    
       toast.success("✅ Account created successfully!", {
         position: "top-center",
         style: { borderRadius: "8px", background: "#1a1a1a", color: "#4dff4d" },
       });
-
+    
       setName("");
       setEmail("");
       setPassword("");
       setConfirmPassword("");
-
+    
       setTimeout(() => router.push("/login"), 2000);
     } catch (error) {
-      toast.error(
-        error.response?.data?.message || "❌ Registration failed!",
-        {
-          position: "top-center",
-          style: { borderRadius: "8px", background: "#1a1a1a", color: "#ff4d4d" },
-        }
-      );
+      let message = "❌ Registration failed!";
+      if (axios.isAxiosError(error) && error.response?.data?.message) {
+        message = error.response.data.message;
+      }
+      toast.error(message, {
+        position: "top-center",
+        style: { borderRadius: "8px", background: "#1a1a1a", color: "#ff4d4d" },
+      });
     } finally {
       setLoading(false);
     }

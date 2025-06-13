@@ -47,25 +47,27 @@ export default function Login() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-
+    
       const data = await response.json();
-
+    
       if (!response.ok) {
         throw new Error(data.error || "Login failed");
       }
-
+    
       toast.success("✅ Logged in successfully!");
       console.log("Token:", data.token);
-
+    
       // Store token securely (consider using cookies instead of localStorage)
       localStorage.setItem("token", data.token);
-
+    
       // Redirect to the dashboard
       router.push("/dashboard");
     } catch (error) {
-      toast.error(`❌ ${error.message}`);
-    } finally {
-      setLoading(false);
+      if (error instanceof Error) {
+        toast.error(`❌ ${error.message}`);
+      } else {
+        toast.error("❌ An unknown error occurred");
+      }
     }
   };
 
