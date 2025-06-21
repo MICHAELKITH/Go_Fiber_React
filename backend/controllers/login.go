@@ -207,8 +207,8 @@ func CreateCheckoutSession(c *fiber.Ctx) error {
             },
         },
         Mode:       stripe.String(string(stripe.CheckoutSessionModePayment)),
-        SuccessURL: stripe.String("http://localhost:3000/success"),
-        CancelURL:  stripe.String("http://localhost:3000/cancel"),
+        SuccessURL: stripe.String("https://55blocks.top/success"),
+        CancelURL:  stripe.String("https://55blocks.top/cancel"),
     }
     s, err := session.New(params)
     if err != nil {
