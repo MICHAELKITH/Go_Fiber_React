@@ -73,5 +73,5 @@ func DeleteTodo(c *fiber.Ctx) error {
 		}
 	}
 
-	return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Todo not found"})
+	return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": " no message found"})
 }
