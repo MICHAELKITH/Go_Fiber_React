@@ -23,7 +23,7 @@ func CheckEmailBreach(c *fiber.Ctx) error {
 			"error": "Failed to create request",
 		})
 	}
-
+//initialize app
 	req.Header.Set("hibp-api-key", os.Getenv("HIBP_API_KEY"))
 	req.Header.Set("User-Agent", "55BlocksApp")
 
