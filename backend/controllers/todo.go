@@ -50,7 +50,7 @@ func UpdateTodo(c *fiber.Ctx) error {
 
 	for i, todo := range todos {
 		if fmt.Sprint(todo.ID) == id {
-			// Optional updates
+			// Optional updates here
 			if update.Body != "" {
 				todos[i].Body = update.Body
 			}
