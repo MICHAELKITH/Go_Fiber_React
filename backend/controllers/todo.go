@@ -62,7 +62,8 @@ func UpdateTodo(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Todo not found"})
 }
 
-// DeleteTodo removes a todo
+// DeleteTodo removes a todo by ID
+// If the todo is not found, it returns a 404 error
 func DeleteTodo(c *fiber.Ctx) error {
 	id := c.Params("id")
 
