@@ -22,5 +22,5 @@ CREATE TABLE todos (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 3. Optional: Add index to speed up queries by user
+
 CREATE INDEX idx_todos_user_id ON todos(user_id);

@@ -133,7 +133,7 @@ const Dashboard = () => {
                 setActiveLink(item.title);
                 setIsSidebarOpen(false);
                 if (item.title === "Logout") {
-                  setShowLogoutModal(true); // Show modal instead of redirect
+                  setShowLogoutModal(true); 
                 }
               }}
             >

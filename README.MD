@@ -68,13 +68,14 @@ Recover lost files using advanced digital forensics and AI-enhanced recovery tec
 ```bash
 git https://github.com/MICHAELKITH/Go_Fiber_React.git
 cd client
+cd backend
 npm install
 npm run dev
 
 
 ### Sample Login Information
 
-```json
+```jsonjk\\
 {
   "email": "mike@example55653.com",
   "password": "securePass123"

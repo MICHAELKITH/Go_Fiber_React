@@ -13,12 +13,12 @@ type Todos struct {
 	Body      string `json:"body"`
 }
 
-// Initial slice
+// In-memory todo storage
 var todos []Todos
 
 // GetTodo fetches all todos
 func GetTodo(c *fiber.Ctx) error {
-	return c.Status(200).JSON(todos)
+	return c.Status(fiber.StatusOK).JSON(todos)
 }
 
 // AddTodo adds a new todo
@@ -26,43 +26,53 @@ func AddTodo(c *fiber.Ctx) error {
 	todo := &Todos{}
 	if err := c.BodyParser(todo); err != nil {
 		log.Println("Error parsing body:", err)
-		return c.Status(400).JSON(fiber.Map{"error": "Invalid request body"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request body"})
 	}
+
 	if todo.Body == "" {
-		return c.Status(400).JSON(fiber.Map{"error": "Todo body is required"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Todo body is required"})
 	}
 
 	todo.ID = len(todos) + 1
 	todos = append(todos, *todo)
-	return c.Status(201).JSON(todo)
+	return c.Status(fiber.StatusCreated).JSON(todo)
 }
 
-// UpdateTodo toggles the completed status of a todo
+// UpdateTodo updates the completed status or body of a todo
 func UpdateTodo(c *fiber.Ctx) error {
 	id := c.Params("id")
+	update := &Todos{}
+
+	if err := c.BodyParser(update); err != nil {
+		log.Println("Error parsing body:", err)
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "Invalid request body"})
+	}
 
 	for i, todo := range todos {
 		if fmt.Sprint(todo.ID) == id {
-			todos[i].Completed = !todos[i].Completed
-			return c.Status(200).JSON(todos[i])
+			// Optional updates here
+			if update.Body != "" {
+				todos[i].Body = update.Body
+			}
+			todos[i].Completed = update.Completed
+			return c.Status(fiber.StatusOK).JSON(todos[i])
 		}
 	}
 
-	return c.Status(404).JSON(fiber.Map{"error": "Todo not found"})
+	return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "Todo not found"})
 }
 
-// DeleteTodo removes a todo
+// DeleteTodo removes a todo by ID
+// If the todo is not found, it returns a 404 error
 func DeleteTodo(c *fiber.Ctx) error {
 	id := c.Params("id")
 
 	for i, todo := range todos {
 		if fmt.Sprint(todo.ID) == id {
 			todos = append(todos[:i], todos[i+1:]...)
-			return c.Status(200).JSON(fiber.Map{"success": true})
+			return c.Status(fiber.StatusOK).JSON(fiber.Map{"success": true})
 		}
 	}
 
-	return c.Status(404).JSON(fiber.Map{"error": "Todo not found"})
+	return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": " no message found"})
 }
-
-

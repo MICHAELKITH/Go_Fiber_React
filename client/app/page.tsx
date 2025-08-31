@@ -8,6 +8,7 @@ import Navbar from "@/components/Navbar";
 import OtherServices from "@/components/OtherServices";
 import Pricing from "@/components/Pricing";
 import Donation from "@/components/Donation";
+import BreachStats from "@/components/BreachStats";
 
 export default function Home() {
   return (
@@ -42,7 +43,9 @@ export default function Home() {
           Securing Your Digital Future with Next-Gen Cybersecurity Solutions
         </p>
         <DarkWebScan />
+        <BreachStats/>
         <ForensicDataRecovery />
+        
         {/* <div className="flex flex-wrap justify-center gap-6">
           <Link href="/login">
             <button className="group relative px-8 py-4 bg-transparent border-2 border-[#39FF14] text-[#39FF14] rounded-lg 
